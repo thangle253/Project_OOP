@@ -54,14 +54,14 @@ class User
 
                 // Trừ số dư tài khoản khỏi tổng số dư người dùng
                 money -= balance;
-                cout << "So du tai khoan " << accID << " la " << balance << " USD da duoc tru ra khoi so du cua nguoi dung.\n";
+                cout << "The account balance of " << accID << ": " << balance << " VND has been deducted from the user's balance";
                 // Xóa tài khoản khỏi danh sách
                 accounts.erase(it);
-                cout << "Tai khoan " << accID << " da duoc xoa.\n";
+                cout << "The account " << accID << " has been deleted.\n";
             } 
             else 
             {
-                cout << "Khong tim thay tai khoan voi ID " << accID << ".\n";
+                cout << "Account not found: " << accID << "\n";
             }
         }
 
@@ -73,11 +73,11 @@ class User
                     money -= acc.getBalance();
                     acc.updateBalance(newBalance - acc.getBalance());
                     money += acc.getBalance();
-                    cout << "Tài khoản " << accID << " đã được cập nhật thành công.\n";
+                    cout << "The account with " << accID << " has been successfully updated.\n";
                     return;
                 }
             }
-            cout << "Không tìm thấy tài khoản với ID " << accID << ".\n";
+            cout << "Account not found: " << accID << "\n";
         }
 
         void banking(const string& fromAccID, const string& toAccID, double amount)              
@@ -90,19 +90,18 @@ class User
             }
 
             if (!fromAcc || !toAcc) {
-                cout << "Lỗi: Một hoặc cả hai ID tài khoản không hợp lệ.\n";
+                cout << "Error: One or both account IDs are invalid.\n";
                 return;
             }
 
             if (fromAcc->getBalance() < amount) {
-                cout << "Lỗi: Tài khoản " << fromAccID << " không đủ tiền để chuyển.\n";
+                cout << "Error: The account " << fromAccID << " does not have sufficient balance.\n";
                 return;
             }
 
             fromAcc->updateBalance(-amount);
             toAcc->updateBalance(amount);
-            cout << "Chuyển khoản thành công: " << amount << " USD từ " 
-                << fromAccID << " sang " << toAccID << endl;
+            cout << "Transfer successful: " << amount << " VND from " << fromAccID << " to " << toAccID << endl;
         }
 
 
@@ -118,9 +117,9 @@ class User
                             [transID](const Transaction& trans) { return trans.getID() == transID; });
             if (it != transactions.end()) {
                 transactions.erase(it);
-                cout << "Giao dịch với ID " << transID << " đã được xóa.\n";
+                cout << "The transaction with ID " << transID << " has been deleted.\n";
             } else {
-                cout << "Không tìm thấy giao dịch với ID " << transID << ".\n";
+                cout << "Transaction with the given ID not found: " << transID << ".\n";
             }
         }
 
@@ -139,14 +138,14 @@ class User
                     {
                         double diff = newAmount - oldAmount;  // Tính chênh lệch số tiền
                         this->updateBalance(diff);  // Cập nhật số dư tài khoản
-                        cout << "So du tai khoan da duoc cap nhat sau khi thay doi giao dich.\n";
+                        cout << "The account balance has been updated after the transaction modification.\n";
                     }
 
-                    cout << "Giao dich " << transID << " da duoc cap nhat.\n";
+                    cout << "The transaction " << transID << "  has been updated.\n";
                     return;
                 }
             }
-            cout << "Khong tim thay giao dich voi ID " << transID << ".\n";
+            cout << "Transaction with the given ID not found: " << transID << ".\n";
         }
 
         void transHistory() const
@@ -175,15 +174,15 @@ class User
                     if (!it->getStatus()) { // Nếu khoản vay chưa được trả
                         double amount = it->getAmount(); // Lấy số tiền khoản vay
                         this -> money += -amount; // Hoàn trả số tiền cho vay vào tài khoản của người cho vay
-                        cout << "Khoan vay cua " << lenderName << " chua duoc tra, so du tai khoan da duoc cap nhat.\n";
+                        cout << "The loan of " << lenderName << " has not been repaid, and the account balance has been updated.\n";
                     }  
                     // Xoa khoan vay
                     loans.erase(it);
-                    cout << "Khoan vay cua " << lenderName << " da duoc xoa.\n";
+                    cout << "The loan of " << lenderName << " has been deleted.\n";
                     return;
                 }
             }
-            cout << "Khong tim thay khoan vay cua nguoi cho vay " << lenderName << ".\n";
+            cout << "Loan from the lender not found: " << lenderName << endl;
         }
     
         void updateLoan(const string& lenderName, double newRate, const std::tm& newDueDate, bool newStatus)
@@ -204,13 +203,13 @@ class User
                     {
                         double amount = loan.getAmount();  // Lấy số tiền đã cho vay
                         this->updateBalance(amount); // Cập nhật số dư của người cho vay
-                        cout << "Số dư của người cho vay đã được cập nhật sau khi khoản vay đã trả.\n";
+                        cout << "The lender's balance has been updated after the loan repayment.\n";
                     }
-                    cout << "Khoản vay của " << lenderName << " đã được cập nhật thành công.\n";
+                    cout << "The loan of " << lenderName << " has been successfully updated.\n";
                     return;
                 }
             }
-            cout << "Không tìm thấy khoản vay của người cho vay " << lenderName << ".\n";
+            cout << "Loan from the lender not found: " << lenderName << endl;
         }
 
 
@@ -231,16 +230,16 @@ class User
                     if (!it->getStatus())  // Nếu khoản cho vay chưa được trả
                     {   double amount = it->getAmount(); // Lấy số tiền khoản cho vay
                         this -> updateBalance(amount); // Hoàn lại số tiền cho vay vào số dư tài khoản
-                        cout << "Khoan cho vay cua " << debtorName << " chua duoc tra, so du tai khoan da duoc cap nhat.\n";
+                        cout << "The debtor " << debtorName << " has not repaid the money, and the account balance has been updated.\n";
                     }
                     // Xóa khoản cho vay khỏi danh sách
                     lends.erase(it);
-                    cout << "Khoan cho vay cua " << debtorName << " da duoc xoa.\n";
+                    cout << "The borrower's loan: " << debtorName << " has been deleted.\n";
                     return;
                 }
             }
 
-            cout << "Khong tim thay khoan cho vay cua nguoi vay " << debtorName << ".\n";
+            cout << "The borrower's loan not found: " << debtorName << ".\n";
         }
 
 
@@ -260,14 +259,14 @@ class User
                         // Cập nhật số dư của người cho vay
                         double amount = lend.getAmount();  // Số tiền đã cho vay
                         this->money += amount;  // Cộng số tiền đã trả vào số dư tài khoản
-                        cout << "Số dư tài khoản của bạn đã được cập nhật sau khi người mượn trả khoản vay.\n";
+                        cout << "Your account balance has been updated after the borrower repaid the loan.\n";
                     }
 
-                    cout << "Khoản cho vay của " << debtorName << " đã được cập nhật thành công.\n";
+                    cout << "The borrower's loan " << debtorName << " đã được cập nhật thành công.\n";
                     return;
                 }
             }
-            cout << "Không tìm thấy khoản cho vay của người vay " << debtorName << ".\n";
+            cout << "The borrower's loan not found " << debtorName << ".\n";
         }
 
 
@@ -320,7 +319,7 @@ class User
             double totalExpense = 0.0;
 
             // In ra tất cả các khoản thu
-            cout << "\n--- Các khoản thu ---\n";
+            cout << "\n--- Income  ---\n";
             for (const auto& trans : transactions) 
             {
                 if (trans.getType() == "1") 
@@ -328,17 +327,17 @@ class User
                     totalIncome += trans.getAmount();
                     // In ra mỗi khoản thu trong một dòng với thông tin ID, danh mục, ngày tháng, và số tiền
                     cout << "ID: " << trans.getID() 
-                        << ", Danh mục: " << trans.getCategory() 
-                        << ", Ngày: " << trans.getDate() 
-                        << ", Số tiền: " << trans.getAmount() << " USD\n";
+                        << ", Category: " << trans.getCategory() 
+                        << ", Date: " << trans.getDate() 
+                        << ", Amount: " << trans.getAmount() << " VND\n";
                 }
             }
 
             // In ra tổng thu
-            cout << "\nTổng thu: " << totalIncome << " USD\n";
+            cout << "\nTotal income: " << totalIncome << " VND\n";
 
             // In ra tất cả các khoản chi
-            cout << "\n--- Các khoản chi ---\n";
+            cout << "\n--- Expenses ---\n";
             for (const auto& trans : transactions) 
             {
                 if (trans.getType() == "0") 
@@ -346,15 +345,15 @@ class User
                     totalExpense += trans.getAmount();
                     // In ra mỗi khoản chi trong một dòng với thông tin ID, danh mục, ngày tháng, và số tiền
                     cout << "ID: " << trans.getID() 
-                        << ", Danh mục: " << trans.getCategory() 
-                        << ", Ngày: " << trans.getDate() 
-                        << ", Số tiền: " << trans.getAmount() << " USD\n";
+                        << ", Category: " << trans.getCategory() 
+                        << ", Date: " << trans.getDate() 
+                        << ", Amount: " << trans.getAmount() << " VND\n";
                 }
             }
 
             // In ra tổng chi
-            cout << "\nTổng chi: " << totalExpense << " USD\n";
-            cout << "Tổng thu chi: " << totalIncome - totalExpense << " USD\n";
+            cout << "\nTotal expenses: " << totalExpense << " VND\n";
+            cout << "Total income and expenses: " << totalIncome - totalExpense << " VND\n";
         }
         // Tổng số dư
         double getBalance() const 
