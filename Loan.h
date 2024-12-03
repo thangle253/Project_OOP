@@ -7,6 +7,9 @@
 #include <sstream> // Để chuyển đổi giữa string và std::tm
 #include <iomanip> // Để sử dụng put_time
 #include <chrono>  // Để sử dụng clock và hệ thống thời gian hiện tại
+#include <cmath> // Để sử dụng sqrt
+#include <math.h> // Để sử dụng pow
+
 
 using namespace std;
 
@@ -96,12 +99,12 @@ public:
         // Kiểm tra và thông báo
         if (daysRemaining == 0 && !status) {
             cout << "Reminder: Loan from " << lenderName
-                 << " is due today (" << getDueDateString() << ") and still unpaid!" << "T. otal amount to pay: " << totalAmount << " USD" << endl;
+                 << " is due today (" << getDueDateString() << ") and still unpaid!" << "T. otal amount to pay: " << totalAmount << " VND" << endl;
         } 
         else if (daysRemaining > 0 && !status) {
             cout << "Loan from " << lenderName
                  << " is still unpaid. Due in " << daysRemaining << " days. Due date: " 
-                 << getDueDateString() << ". Total amount to pay: " << totalAmount << " USD" << endl;
+                 << getDueDateString() << ". Total amount to pay: " << totalAmount << " VND" << endl;
         } 
         else if (status) {
             cout << "Loan from " << lenderName << " has been paid. Due date was: " << getDueDateString() << endl;
@@ -109,7 +112,7 @@ public:
         else if (daysRemaining < 0) {
             cout << "Loan from " << lenderName
                  << " is overdue. Was due " << -daysRemaining << " days ago. Due date: " 
-                 << getDueDateString() << ". Total amount to pay: " << totalAmount << " USD" << endl;
+                 << getDueDateString() << ". Total amount to pay: " << totalAmount << " VND" << endl;
         }
     }
 };
