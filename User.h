@@ -262,7 +262,7 @@ class User
                         cout << "Your account balance has been updated after the borrower repaid the loan.\n";
                     }
 
-                    cout << "The borrower's loan " << debtorName << " đã được cập nhật thành công.\n";
+                    cout << "The borrower's loan " << debtorName << " is updated successfully..\n";
                     return;
                 }
             }

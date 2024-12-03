@@ -619,12 +619,22 @@ int main()
                             getline(cin, debtorName);
 
                             // Enter lend amount
-                            cout << "Enter lend amount: ";
-                            cin >> amount;
+                            do {
+                                cout << "Enter lend amount: ";
+                                cin >> amount;
+                                if (amount <= 0) {
+                                    cout << "Amount cannot be negative. Please enter a positive value.\n";
+                                }
+                            } while (amount <= 0);
 
                             // Enter interest rate
-                            cout << "Enter interest rate (%): ";
-                            cin >> interestRate;
+                            do {
+                                cout << "Enter interest rate (%): ";
+                                cin >> interestRate;
+                                if (interestRate < 0) {
+                                    cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                }
+                            } while (interestRate < 0);
 
                             // Enter and validate creation date
                             std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
@@ -673,9 +683,13 @@ int main()
                                     lendFound = true;
 
                                     // Input new interest rate
-                                    cout << "Enter new interest rate (%): ";
-                                    cin >> newRate;
-
+                                    do {
+                                        cout << "Enter new interest rate (%): ";
+                                        cin >> newRate;
+                                        if (newRate < 0) {
+                                            cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                        }
+                                    } while (newRate < 0);
                                     // Input new due date and validate
                                     cout << "Enter new due date (yyyy-mm-dd): ";
                                     cin >> newDueDateStr;
@@ -704,7 +718,7 @@ int main()
                             getline(cin, debtorName);
 
                             currentUser->removeLend(debtorName);
-                            cout << "Lend has been removed (if it existed).\n";
+                            cout << "Lend has been removed successfully.\n";
                             break;
                         }
                         case 0:

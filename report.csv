@@ -1,29 +1,21 @@
-Tong So Du,17160.00 USD
+Tong So Du,-870000.00 USD
 
 --- Danh Sach Tai Khoan ---
 Tai Khoan,So Du
-Mb,175.00 USD
-Vcb,285.00 USD
-Scb,1500.00 USD
-Acb,17000.00 USD
 
 --- Danh Sach Khoan Vay ---
 Lender,Money,Rate,Due Date,Status
-Lender: Nguyen, Money: 100.000000, Rate: 1.000000%, Due Date: 2025-01-01, Created On: 2024-03-25, Status: Unpaid
-Lender: Sang, Money: 200.000000, Rate: 1.000000%, Due Date: 2025-01-01, Created On: 2021-12-02, Status: Unpaid
 
 --- Danh Sach Khoan Cho Vay ---
 Debtor,Money,Rate,Due Date,Status
-Debtor: Trung, Money: 1000.000000, Rate: 1.000000%, Due Date: 2025-01-01, Status: Unpaid
-Debtor: Khang, Money: 500.000000, Rate: 1.000000%, Due Date: 2025-01-01, Status: Unpaid
+Debtor: thang, Money: 100000.000000, Rate: 2.000000%, Due Date: 2025-12-09, Status: Unpaid
+Debtor: trung, Money: 300000.000000, Rate: 5.000000%, Due Date: 2024-02-02, Status: Unpaid
+Debtor: khang, Money: 400000.000000, Rate: 3.000000%, Due Date: 2024-01-01, Status: Unpaid
+Debtor: nguyen, Money: 70000.000000, Rate: 7.000000%, Due Date: 2024-12-06, Status: Unpaid
 
 --- Bao Cao Thu Chi ---
 Type,ID,Category,Date,Amount
-Expense,1,Shopping,2024-10-12,25.00 USD
-Income,2,Gift,2024-03-15,1000.00 USD
-Income,3,Other Income,2024-03-25,16000.00 USD
-Expense,4,Bills,2024-12-02,15.00 USD
 
-Tong Thu,17000.00 USD
-Tong Chi,40.00 USD
-Chenh Lech Thu Chi,16960.00 USD
+Tong Thu,0.00 USD
+Tong Chi,0.00 USD
+Chenh Lech Thu Chi,0.00 USD
