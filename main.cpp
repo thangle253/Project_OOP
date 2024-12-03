@@ -1,111 +1,111 @@
 #include <iostream>
-#include <unordered_map> // Luu tru danh sach nguoi dung
-#include "User.h"        // Tep tieu de chua lop User va cac lop lien quan
-#include <fstream>  // Để sử dụng ofstream
-#include <ctime>    // Dùng cho xử lý ngày tháng
-#include <chrono> // Dùng cho xử lý thời gian
+#include <unordered_map> // For storing user list
+#include "User.h"        // Header file for User class and related classes
+#include <fstream>  // For using ofstream
+#include <ctime>    // For handling date and time
+#include <chrono> // For handling time
 #include <cmath>
 #include <sstream>
 #include <iomanip>
 
 using namespace std;
 
-// Hien thi menu dang nhap
+// Show login menu
 void showLoginMenu() 
 {
-    cout << "\n--- Quan ly Tai chinh ---\n";
-    cout << "1. Dang nhap\n";
-    cout << "2. Dang ky tai khoan moi\n";
-    cout << "0. Thoat\n";
-    cout << "Lua chon: ";
+    cout << "\n--- Financial Management ---\n";
+    cout << "1. Login\n";
+    cout << "2. Register a new account\n";
+    cout << "0. Exit\n";
+    cout << "Choose an option: ";
 }
 
-// Lam tron so thap phan
+// Round to two decimal places
 double roundToTwoDecimal(double amount) 
 {
-    return round(amount * 100.0) / 100.0; // Làm tròn tới 2 chữ số thập phân
+    return round(amount * 100.0) / 100.0; // Round to two decimal places
 }
 
-// Ham dang nhap
+// Login function
 User* login(unordered_map<string, User>& users) 
 {
     string userID, password;
-    cout << "Nhap ID nguoi dung: ";
+    cout << "Enter user ID: ";
     cin >> userID;
 
-    // Kiem tra nguoi dung co ton tai khong
+    // Check if user exists
     auto it = users.find(userID);
-    if (it != users.end()) { // Neu tim thay ID trong danh sach nguoi dung
+    if (it != users.end()) { // If ID is found in the user list
         User& user = it->second;
-        cout << "Nhap mat khau: ";
+        cout << "Enter password: ";
         cin >> password;
 
-        // Kiem tra mat khau
+        // Check password
         if (user.authenticate(password)) {
-            cout << "Dang nhap thanh cong! Xin chao, " << userID << ".\n";
-            return &user; // Tra ve con tro den doi tuong User
+            cout << "Login successful! Welcome, " << userID << ".\n";
+            return &user; // Return pointer to User object
         }
         else {
-            cout << "Sai mat khau. Vui long thu lai.\n";
+            cout << "Incorrect password. Please try again.\n";
         }
-    } else { // Neu ID khong ton tai
-        cout << "Nguoi dung khong ton tai.\n";
+    } else { // If ID does not exist
+        cout << "User does not exist.\n";
     }
 
-    return nullptr; // Tra ve nullptr neu khong dang nhap thanh cong
+    return nullptr; // Return nullptr if login fails
 }
 
-// Ham dang ky tai khoan moi
+// Register new user
 void registerUser(unordered_map<string, User>& users) {
     string userID, userName, password;
-    cout << "Nhap ID nguoi dung: ";
+    cout << "Enter user ID: ";
     cin >> userID;
 
-    // Kiem tra neu ID da ton tai
+    // Check if ID already exists
     if (users.find(userID) != users.end()) {
-        cout << "ID nay da ton tai. Vui long chon ID khac.\n";
+        cout << "This ID is already taken. Please choose another one.\n";
         return;
     }
 
-    cout << "Nhap ten nguoi dung: ";
+    cout << "Enter user name: ";
     cin.ignore();
     getline(cin, userName);
-    cout << "Nhap mat khau: ";
+    cout << "Enter password: ";
     cin >> password;
 
-    // Them nguoi dung moi vao danh sach
+    // Add new user to the list
     users.emplace(userID, User(userID, userName, password));
-    cout << "Tai khoan da duoc tao thanh cong! Ban co the dang nhap ngay bay gio.\n";
+    cout << "Account created successfully! You can log in now.\n";
 }
 
-// Hien thi menu chinh
+// Show main menu
 void showMainMenu() 
 {
     cout << "\n====================\n";
-    cout << "1. Quan ly tai khoan\n";
-    cout << "2. Quan ly giao dich\n";
-    cout << "3. Quan ly khoan vay\n";
-    cout << "4. Quan ly khoan cho vay\n";
-    cout << "5. Bao cao tai chinh\n";
-    cout << "6. Cac tinh nang dac biet\n";
-    cout << "0. Dang xuat\n";
+    cout << "1. Manage accounts\n";
+    cout << "2. Manage transactions\n";
+    cout << "3. Manage loans\n";
+    cout << "4. Manage lends\n";
+    cout << "5. Financial report\n";
+    cout << "6. Special features\n";
+    cout << "0. Logout\n";
     cout << "====================\n";
-    cout << "Lua chon: ";
+    cout << "Choose an option: ";
 }
 
-// Hàm chuyển đổi từ string sang std::tm
+// Convert string to std::tm for date
 std::tm convertStringToDate(const std::string& dateStr) 
 {
     std::tm date = {};
     std::istringstream ss(dateStr);
     ss >> std::get_time(&date, "%Y-%m-%d");
     if (ss.fail()) {
-        throw std::invalid_argument("Ngay thang khong hop le: " + dateStr);
+        throw std::invalid_argument("Invalid date: " + dateStr);
     }
     return date;
 }
 
-// Hàm để yêu cầu người dùng nhập ngày đúng định dạng và kiểm tra điều kiện
+// Function to get a valid date from the user, with condition for future dates
 std::tm getValidDateFromUser(const std::string& prompt, int allowFutureDate) 
 {
     std::string dateStr;
@@ -117,102 +117,104 @@ std::tm getValidDateFromUser(const std::string& prompt, int allowFutureDate)
         std::cin >> dateStr;
 
         try {
-            date = convertStringToDate(dateStr); // Kiểm tra và chuyển đổi ngày tháng
+            date = convertStringToDate(dateStr); // Check and convert date string
 
-            // Nếu không cho phép ngày trong tương lai
+            // If future dates are not allowed
             if (allowFutureDate == 0) {
-                std::time_t currentTime = std::time(nullptr); // Lấy thời gian hiện tại
-                std::tm* currentDate = std::localtime(&currentTime); // Đổi sang std::tm
+                std::time_t currentTime = std::time(nullptr); // Get current time
+                std::tm* currentDate = std::localtime(&currentTime); // Convert to std::tm
 
-                // So sánh ngày nhập vào với ngày hiện tại
+                // Compare input date with current date
                 if (date.tm_year > currentDate->tm_year || 
                     (date.tm_year == currentDate->tm_year && date.tm_mon > currentDate->tm_mon) ||
                     (date.tm_year == currentDate->tm_year && date.tm_mon == currentDate->tm_mon && date.tm_mday > currentDate->tm_mday)) {
-                    throw std::invalid_argument("Ngày không thể là trong tương lai.");
+                    throw std::invalid_argument("Date cannot be in the future.");
                 }
             }
 
-            break;  // Nếu không có lỗi, thoát vòng lặp
+            break;  // Exit loop if no errors
         } catch (const std::invalid_argument& e) {
-            std::cout << "Lỗi: " << e.what() << ". Vui lòng nhập lại ngày theo định dạng yyyy-mm-dd.\n";
+            std::cout << "Error: " << e.what() << ". Please re-enter the date in the format yyyy-mm-dd.\n";
         }
     }
 
     return date;
 }
 
-// Ham quan ly giao dich
-
 void manageTransaction(User* currentUser) 
 {
-    // Kiểm tra nếu người dùng có tài khoản
-    if (currentUser->getAccounts().empty()) {
-        cout << "Bạn không có tài khoản nào. Vui lòng tạo tài khoản trước khi thực hiện giao dịch.\n";
+    // Check if user has any account
+    if (currentUser->getAccounts().empty()) 
+    {
+        cout << "You do not have any accounts. Please create an account first to perform a transaction.\n";
         return;
     }
 
-    // Hiển thị các tài khoản của người dùng
-    cout << "Chọn tài khoản giao dịch:\n";
+    // Show user accounts
+    cout << "Choose a transaction account:\n";
     int i = 1;
-    for (const auto& acc : currentUser->getAccounts()) {
-        cout << i++ << ". " << acc.getAccountName() << " - " << acc.getBalance() << " USD\n";
+    for (const auto& acc : currentUser->getAccounts())
+    {
+        cout << i++ << ". " << acc.getAccountName() << " - " << acc.getBalance() << " VND\n";
     }
 
     int accChoice;
-    cout << "Lựa chọn tài khoản: ";
+    cout << "Choose an account: ";
     cin >> accChoice;
     if (accChoice < 1 || accChoice > currentUser->getAccounts().size()) {
-        cout << "Lựa chọn không hợp lệ. Vui lòng thử lại.\n";
+        cout << "Invalid choice. Please try again.\n";
         return;
     }
-
-    // Lấy tài khoản được chọn
+    // Get the selected account
     Account& selectedAccount = currentUser->getAccounts()[accChoice - 1];
     
-    string transID, date, type, category, note;
     double amount;
+    string date, type, category, note;
+    
+    // Get transaction details
+    // Sử dụng to_string(currentUser->getTransactions().size() + 1) để tạo ID giao dịch tự động
+    string transID = to_string(currentUser->getTransactions().size() + 1);
+    cout << "Transaction ID: " << transID << endl; // Automatically generated ID
 
-    // Nhập thông tin giao dịch
-    cout << "Nhập ID giao dịch: ";
-    cin >> transID;
-    cout << "Nhập số tiền: ";
+    cout << "Enter amount: ";
     cin >> amount;
 
-    // Nhập ngày giao dịch, sử dụng hàm getValidDateFromUser để đảm bảo ngày hợp lệ
-    std::tm transDate = getValidDateFromUser("Nhập ngày giao dịch (yyyy-mm-dd): ",0);
+    // Get transaction date using getValidDateFromUser to ensure valid date
+    std::tm transDate = getValidDateFromUser("Enter transaction date (yyyy-mm-dd): ", 0);
 
-    cout << "Loại giao dịch (1: Thu / 0: Chi): ";
+    cout << "Transaction type (1: Income / 0: Expense): ";
     cin >> type;
-    cout << "Danh mục: ";
-    cin.ignore();  // Để bỏ qua ký tự '\n' còn lại trong bộ đệm
+    cout << "Category: ";
+    cin.ignore();  // To clear the newline character in the buffer
     getline(cin, category);
-    cout << "Ghi chú: ";
+    cout << "Note: ";
     getline(cin, note);
 
-    // Kiểm tra loại giao dịch và cập nhật số dư tài khoản
+    // Process the transaction based on type and update account balance
     if (type == "1") {
-        // Giao dịch thu (Income), cộng tiền vào tài khoản
+        // Income transaction, add money to account
         selectedAccount.updateBalance(amount);
         currentUser->updateBalance(amount);
-        cout << "Giao dịch thu đã được thêm thành công. Số dư tài khoản đã được cập nhật!\n";
+        cout << "Income transaction added successfully. Account balance updated!\n";
     } else if (type == "0") {
-        // Giao dịch chi (Expense), trừ tiền từ tài khoản
+        // Expense transaction, subtract money from account
         if (selectedAccount.getBalance() >= amount) {
             selectedAccount.updateBalance(-amount);
             currentUser->updateBalance(-amount);
-            cout << "Giao dịch chi đã được thêm thành công. Số dư tài khoản đã được cập nhật!\n";
+            cout << "Expense transaction added successfully. Account balance updated!\n";
         } else {
-            cout << "Số dư tài khoản không đủ để thực hiện giao dịch chi!\n";
+            cout << "Insufficient funds to perform this expense transaction!\n";
             return;
         }
     } else {
-        cout << "Loại giao dịch không hợp lệ. Vui lòng nhập 1 cho 'Thu' hoặc 0 cho 'Chi'.\n";
+        cout << "Invalid transaction type. Please enter 1 for 'Income' or 0 for 'Expense'.\n";
         return;
     }
 
-    // Thêm giao dịch vào lịch sử giao dịch
+    // Add the transaction to the transaction history with the automatically generated ID
     currentUser->addTrans(Transaction(transID, amount, transDate, type, category, note));
 }
+
 
 void exportReportToCSV(User* currentUser) 
 {
@@ -287,122 +289,132 @@ void exportReportToCSV(User* currentUser)
     cout << "Bao cao da duoc xuat ra file report.csv\n";
 }
 
-
 int main() 
 {
-    unordered_map<string, User> users; // Luu danh sach nguoi dung
-    User* currentUser = nullptr;      // Nguoi dung hien tai
+    unordered_map<string, User> users; // Store the list of users
+    User* currentUser = nullptr;      // Current logged-in user
     int choice;
 
     do {
-        // Neu chua dang nhap, hien thi menu dang nhap
+        // If not logged in, show login menu
         if (currentUser == nullptr) 
         {
             showLoginMenu();
             cin >> choice;
             switch (choice) 
             {
-                case 1: // Dang nhap
+                case 1: // Login
                     currentUser = login(users);
                     break;
-                case 2: // Dang ky tai khoan moi
+                case 2: // Register new account
                     registerUser(users);
                     break;
-                case 0: // Thoat
-                    cout << "Thoat chuong trinh...\n";
+                case 0: // Exit
+                    cout << "Exiting the program...\n";
                     return 0;
                 default:
-                    cout << "Lua chon khong hop le. Vui long thu lai.\n";
+                    cout << "Invalid choice. Please try again.\n";
             }
         } 
         else 
         {
-            // Neu da dang nhap, hien thi menu chinh
+            // If logged in, show the main menu
             showMainMenu();
             cin >> choice;
 
             switch (choice) 
             {
                 case 1: 
-                { // Quan ly tai khoan
+                { // Manage accounts
                     int accountChoice;
-                    cout << "1. Them tai khoan\n2. Xoa tai khoan\n3. Cap nhat so du tai khoan\n0. Quay lai\nLua chon: ";
+                    cout << "1. Add account\n2. Remove account\n3. Update account balance\n0. Go back\nChoose option: ";
                     cin >> accountChoice;
 
-                    if (accountChoice == 1) { // Them tai khoan
-                        string accID, accName;
+                    if (accountChoice == 1) 
+                    { // Add account
+                        if (accountChoice == 1) 
+                        { // Add account
+                        string accName;
                         double balance;
-                        cout << "Nhap ID tai khoan: ";
-                        cin >> accID;
-                        cout << "Nhap ten tai khoan: ";
-                        cin.ignore();
+                        
+                        // Tạo ID tự động dựa vào số lượng tài khoản hiện tại
+                        string accID = to_string(currentUser->getAccounts().size() + 1);  // Tạo ID tự động từ số lượng tài khoản
+
+                        cout << "Account ID: " << accID << endl;  // Hiển thị ID tự động
+
+                        cout << "Enter account name: ";
+                        cin.ignore();  // Đảm bảo không bỏ qua ký tự '\n' còn lại
                         getline(cin, accName);
-                        cout << "Nhap so du ban dau: ";
+                        cout << "Enter initial balance: ";
                         cin >> balance;
+
+                        // Add new account with generated ID
                         currentUser->addAccount(Account(accID, accName, balance));
-                        cout << "Tai khoan da duoc them thanh cong!\n";
-                    } 
+                        cout << "Account has been added successfully!\n";
+                    }
                     else if (accountChoice == 2) 
-                    { // Xoa tai khoan
+                    { // Remove account
                         string accID;
-                        cout << "Nhap ID tai khoan can xoa: ";
+                        cout << "Enter the account ID to remove: ";
                         cin >> accID;
                         currentUser->removeAccount(accID);
-                        cout << "Tai khoan da duoc xoa (neu ton tai).\n";
-                    } else if (accountChoice == 3) { // Cap nhat so du
+                        cout << "Account has been removed (if it existed).\n";
+                    } 
+                    else if (accountChoice == 3) { // Update account balance
                         string accID;
                         double newBalance;
-                        cout << "Nhap ID tai khoan can cap nhat: ";
+                        cout << "Enter the account ID to update: ";
                         cin >> accID;
-                        cout << "Nhap so du moi: ";
+                        cout << "Enter the new balance: ";
                         cin >> newBalance;
                         currentUser->updateAccount(accID, newBalance);
-                        cout << "So du tai khoan da duoc cap nhat.\n";
+                        cout << "Account balance has been updated.\n";
                     }
                     break;
+                    }
                 }
-                case 2: // Quan ly giao dich
+                case 2: // Manage transactions
                 {
                     int transChoice;
-                    cout << "1. Them giao dich\n";
-                    cout << "2. Xem lich su giao dich\n";
-                    cout << "3. Cap nhat giao dich\n";
-                    cout << "4. Xoa giao dich\n";
-                    cout << "0. Quay lai\n";
-                    cout << "Lua chon: ";
+                    cout << "1. Add transaction\n";
+                    cout << "2. View transaction history\n";
+                    cout << "3. Update transaction\n";
+                    cout << "4. Remove transaction\n";
+                    cout << "0. Go back\n";
+                    cout << "Choose option: ";
                     cin >> transChoice;
 
                     switch (transChoice) {
                         case 1: 
-                        { // Them giao dich
+                        { // Add transaction
                             manageTransaction(currentUser);
                             break;
                         }
                         case 2: 
-                        { // Xem lich su giao dich
+                        { // View transaction history
                             currentUser->transHistory();
                             break;
                         }      
                         case 3: 
-                        { // Cap nhat giao dich
+                        { // Update transaction
                             string transID;
                             double newAmount;
                             string newNote;
 
-                            cout << "Nhap ID giao dich can cap nhat: ";
+                            cout << "Enter transaction ID to update: ";
                             cin >> transID;
-                            cout << "Nhap so tien moi: ";
+                            cout << "Enter the new amount: ";
                             cin >> newAmount;
-                            cout << "Nhap ghi chu moi: ";
-                            cin.ignore();  // De co the nhap ghi chu dang chuoi
+                            cout << "Enter the new note: ";
+                            cin.ignore();  // To clear the newline character
                             getline(cin, newNote);
 
                             currentUser->updateTrans(transID, newAmount, newNote);
                             break;
                         }
-                        case 4: { // Xoa giao dich
+                        case 4: { // Remove transaction
                             string transID;
-                            cout << "Nhap ID giao dich can xoa: ";
+                            cout << "Enter transaction ID to remove: ";
                             cin >> transID;
                             currentUser->removeTrans(transID);
                             break;
@@ -410,59 +422,59 @@ int main()
                         case 0:
                             break;
                         default:
-                            cout << "Lua chon khong hop le. Vui long thu lai.\n";
+                            cout << "Invalid choice. Please try again.\n";
                             break;
                     }
                     break;
                 }
-                case 3: // Quan ly khoan vay
+                case 3: // Manage loans
                 {
                     int loanChoice;
-                    cout << "1. Them khoan vay\n";
-                    cout << "2. Xem danh sach khoan vay\n";
-                    cout << "3. Cap nhat khoan vay\n";
-                    cout << "4. Xoa khoan vay\n";
-                    cout << "0. Quay lai\n";
-                    cout << "Lua chon: ";
+                    cout << "1. Add loan\n";
+                    cout << "2. View loan list\n";
+                    cout << "3. Update loan\n";
+                    cout << "4. Remove loan\n";
+                    cout << "0. Go back\n";
+                    cout << "Choose option: ";
                     cin >> loanChoice;
 
                     switch (loanChoice) 
                     {
                         case 1: 
-                        { // Thêm khoản cho vay
+                        { // Add loan
                             string debtorName;
                             double amount, interestRate;
                             bool status;
 
-                            cout << "Nhập tên người cho bạn vay: ";
-                            cin.ignore(); // Đảm bảo không bỏ qua dấu cách khi nhập tên
+                            cout << "Enter lender's name: ";
+                            cin.ignore(); // To ensure no space is skipped when entering name
                             getline(cin, debtorName);
                             
-                            cout << "Nhập số tiền vay: ";
+                            cout << "Enter loan amount: ";
                             cin >> amount;
 
-                            cout << "Nhập lãi suất (%): ";
+                            cout << "Enter interest rate (%): ";
                             cin >> interestRate;
 
-                            // Sử dụng hàm getValidDateFromUser để nhập và kiểm tra ngày tạo và ngày đến hạn
-                            std::tm createDate = getValidDateFromUser("Nhập ngày tạo (yyyy-mm-dd): ",0);
-                            std::tm dueDate = getValidDateFromUser("Nhập ngày đến hạn (yyyy-mm-dd): ",1);
+                            // Use getValidDateFromUser function to input and validate creation and due dates
+                            std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
+                            std::tm dueDate = getValidDateFromUser("Enter due date (yyyy-mm-dd): ", 1);
 
-                            cout << "Trạng thái (0: Chưa trả, 1: Đã trả): ";
+                            cout << "Status (0: Unpaid, 1: Paid): ";
                             cin >> status;
 
-                            // Thêm khoản  vay vào danh sách
+                            // Add the loan to the list
                             currentUser->addLoan(Loan(debtorName, amount, interestRate, dueDate, createDate, status));
-                            cout << "Khoản vay đã được thêm thành công!\n";
+                            cout << "Loan added successfully!\n";
 
-                            // Cập nhật số dư khi  vay
+                            // Update balance when borrowing
                             currentUser->updateBalance(-amount);
                             break;
                         }
 
                         case 2: 
-                        { // Xem danh sach khoan vay
-                            cout << "Danh sach khoan vay:\n";
+                        { // View loan list
+                            cout << "Loan list:\n";
                             for (const auto& loan : currentUser->getLoans()) 
                             {
                                 cout << loan.getLoanDetail() << endl;
@@ -471,16 +483,16 @@ int main()
                         }
                         case 3: 
                         { 
-                            // Cập nhật khoản vay
+                            // Update loan
                             string lenderName;
                             double newRate;
                             bool newStatus;
 
-                            cout << "Nhập tên người cho vay để cập nhật: ";
+                            cout << "Enter lender's name to update: ";
                             cin.ignore();
                             getline(cin, lenderName);
 
-                            // Tìm khoản vay theo tên người cho vay
+                            // Find the loan by lender's name
                             bool loanFound = false;
                             for (auto& loan : currentUser->getLoans()) 
                             {
@@ -488,34 +500,34 @@ int main()
                                 {
                                     loanFound = true;
 
-                                    // Nhập lãi suất mới
-                                    cout << "Nhập lãi suất mới (%): ";
+                                    // Input new interest rate
+                                    cout << "Enter new interest rate (%): ";
                                     cin >> newRate;
 
-                                    // Nhập ngày đến hạn mới bằng hàm getValidDateFromUser
-                                    tm newDueDate = getValidDateFromUser("Nhập ngày đến hạn mới (yyyy-mm-dd): ",1);
+                                    // Input new due date using getValidDateFromUser
+                                    tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
                                     
-                                    // Nhập trạng thái mới (0: Chưa trả, 1: Đã trả)
-                                    cout << "Nhập trạng thái mới (0: Chưa trả, 1: Đã trả): ";
+                                    // Input new status (0: Unpaid, 1: Paid)
+                                    cout << "Enter new status (0: Unpaid, 1: Paid): ";
                                     cin >> newStatus;
 
-                                    // Cập nhật thông tin khoản vay
+                                    // Update loan details
                                     currentUser->updateLoan(lenderName, newRate, newDueDate, newStatus);
-                                    cout << "Khoản vay của " << lenderName << " đã được cập nhật thành công.\n";
-                                    break;  // Thoát khỏi vòng lặp sau khi cập nhật thành công
+                                    cout << "Loan of " << lenderName << " updated successfully.\n";
+                                    break;  // Exit the loop after successful update
                                 }
                             }
 
                             if (!loanFound) {
-                                cout << "Không tìm thấy khoản vay của người cho vay " << lenderName << ".\n";
+                                cout << "No loan found for lender " << lenderName << ".\n";
                             }
                             break;
                         }
 
                         case 4: 
-                        { // Xoa khoan vay
+                        { // Remove loan
                             string lenderName;
-                            cout << "Nhap ten nguoi cho vay de xoa khoan vay: ";
+                            cout << "Enter lender's name to remove loan: ";
                             cin.ignore();
                             getline(cin, lenderName);
                             currentUser->removeLoan(lenderName);
@@ -524,66 +536,65 @@ int main()
                         case 0:
                             break;
                         default:
-                            cout << "Lua chon khong hop le. Vui long thu lai.\n";
+                            cout << "Invalid choice. Please try again.\n";
                             break;
                     }
                     break;
                 }
-                case 4: // Quan ly khoan cho vay
+                case 4: // Manage lends
                 {
                     int lendChoice;
-                    cout << "1. Them khoan cho vay\n";
-                    cout << "2. Xem danh sach khoan cho vay\n";
-                    cout << "3. Cap nhat khoan cho vay\n";
-                    cout << "4. Xoa khoan cho vay\n";
-                    cout << "0. Quay lai\n";
-                    cout << "Lua chon: ";
+                    cout << "1. Add lend\n";
+                    cout << "2. View lend list\n";
+                    cout << "3. Update lend\n";
+                    cout << "4. Remove lend\n";
+                    cout << "0. Go back\n";
+                    cout << "Choose option: ";
                     cin >> lendChoice;
 
                     switch (lendChoice) 
                     {
                         case 1: 
                         { 
-                            // Thêm khoản cho vay
+                            // Add lend
                             string debtorName, dueDateStr, createDateStr;
                             double amount, interestRate;
                             bool status;
 
-                            // Nhập tên người vay
-                            cout << "Nhập tên người vay: ";
-                            cin.ignore();  // Để bỏ qua ký tự '\n' còn lại trong bộ đệm
+                            // Enter debtor's name
+                            cout << "Enter debtor's name: ";
+                            cin.ignore();  // To skip the leftover '\n' character
                             getline(cin, debtorName);
 
-                            // Nhập số tiền cho vay
-                            cout << "Nhập số tiền cho vay: ";
+                            // Enter lend amount
+                            cout << "Enter lend amount: ";
                             cin >> amount;
 
-                            // Nhập lãi suất
-                            cout << "Nhập lãi suất (%): ";
+                            // Enter interest rate
+                            cout << "Enter interest rate (%): ";
                             cin >> interestRate;
 
-                            // Nhập và kiểm tra ngày tạo
-                            std::tm createDate = getValidDateFromUser("Nhập ngày tạo (yyyy-mm-dd): ",0);
+                            // Enter and validate creation date
+                            std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
 
-                            // Nhập và kiểm tra ngày đến hạn
-                            std::tm dueDate = getValidDateFromUser("Nhập ngày đến hạn (yyyy-mm-dd): ",1);
+                            // Enter and validate due date
+                            std::tm dueDate = getValidDateFromUser("Enter due date (yyyy-mm-dd): ", 1);
 
-                            // Nhập trạng thái khoản cho vay
-                            cout << "Trạng thái (0: Chưa trả, 1: Đã trả): ";
+                            // Enter lend status
+                            cout << "Status (0: Unpaid, 1: Paid): ";
                             cin >> status;
 
-                            // Thêm khoản cho vay vào danh sách
+                            // Add the lend to the list
                             currentUser->addLend(Lend(debtorName, amount, interestRate, dueDate, createDate, status));
-                            cout << "Khoản cho vay đã được thêm thành công!\n";
+                            cout << "Lend added successfully!\n";
 
-                            // Cập nhật số dư khi cho vay
+                            // Update balance when lending
                             currentUser->updateBalance(-amount); 
                             break;
                         }
 
-
-                        case 2: { // Xem danh sach khoan cho vay
-                            cout << "Danh sach khoan cho vay:\n";
+                        case 2: { // View lend list
+                            cout << "Lend list:\n";
                             for (const auto& lend : currentUser->getLends()) {
                                 cout << lend.getBorrowDetail() << endl;
                             }
@@ -591,17 +602,17 @@ int main()
                         }
                         case 3: 
                         { 
-                            // Cập nhật khoản cho vay
+                            // Update lend
                             string debtorName;
                             double newRate;
                             string newDueDateStr;
                             bool newStatus;
 
-                            cout << "Nhập tên người vay để cập nhật: ";
+                            cout << "Enter debtor's name to update: ";
                             cin.ignore();
                             getline(cin, debtorName);
 
-                            // Tìm khoản cho vay theo tên người vay
+                            // Find lend by debtor's name
                             bool lendFound = false;
                             for (auto& lend : currentUser->getLends()) 
                             {
@@ -609,86 +620,87 @@ int main()
                                 {
                                     lendFound = true;
 
-                                    // Nhập lại lãi suất mới
-                                    cout << "Nhập lãi suất mới (%): ";
+                                    // Input new interest rate
+                                    cout << "Enter new interest rate (%): ";
                                     cin >> newRate;
 
-                                    // Nhập ngày đến hạn mới và kiểm tra ngày hợp lệ
-                                    cout << "Nhập ngày đến hạn mới (yyyy-mm-dd): ";
+                                    // Input new due date and validate
+                                    cout << "Enter new due date (yyyy-mm-dd): ";
                                     cin >> newDueDateStr;
-                                    // Kiểm tra và chuyển đổi ngày tháng sang std::tm
-                                    std::tm newDueDate = getValidDateFromUser("Nhập ngày đến hạn mới (yyyy-mm-dd): ",1);
-                                    // Nhập trạng thái mới (0: Chưa trả, 1: Đã trả)
-                                    cout << "Nhập trạng thái mới (0: Chưa trả, 1: Đã trả): ";
+                                    // Validate and convert newDueDate
+                                    std::tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
+                                    // Input new status (0: Unpaid, 1: Paid)
+                                    cout << "Enter new status (0: Unpaid, 1: Paid): ";
                                     cin >> newStatus;
-                                    // Cập nhật thông tin khoản vay
+                                    // Update lend details
                                     currentUser->updateLend(debtorName, newRate, newDueDate, newStatus);
-                                    cout << "Khoản cho vay của " << debtorName << " đã được cập nhật thành công.\n";
-                                    break;  // Thoát khỏi vòng lặp sau khi cập nhật thành công
+                                    cout << "Lend of " << debtorName << " updated successfully.\n";
+                                    break;  // Exit the loop after successful update
                                 }
                             }
                             if (!lendFound) {
-                                cout << "Không tìm thấy khoản cho vay của người vay " << debtorName << ".\n";
+                                cout << "No lend found for debtor " << debtorName << ".\n";
                             }
                             break;
                         }
 
                         case 4: 
-                        { // Xoa khoan cho vay
+                        { // Remove lend
                             string debtorName;
-                            cout << "Nhap ten nguoi vay de xoa khoan cho vay: ";
+                            cout << "Enter debtor's name to remove lend: ";
                             cin.ignore();
                             getline(cin, debtorName);
 
                             currentUser->removeLend(debtorName);
-                            cout << "Khoan cho vay da duoc xoa (neu co).\n";
+                            cout << "Lend has been removed (if it existed).\n";
                             break;
                         }
                         case 0:
                             break;
                         default:
-                            cout << "Lua chon khong hop le. Vui long thu lai.\n";
+                            cout << "Invalid choice. Please try again.\n";
                             break;
                     }
                     break;
                 }
-                case 5: // Bao cao tai chinh
+                case 5: // Financial report
                 {
-                    
-                    cout << "\n--- Bao cao tai chinh ---\n";
-                    cout << "1. Bao cao tong so du\n";
-                    cout << "2. Bao cao tai khoan\n";
-                    cout << "3. Bao cao khoan vay va khoan cho vay\n";
-                    cout << "4. Bao cao thu chi\n";
-                    cout << "0. Quay lai\n";
-                    cout << "Lua chon: ";
+                    cout << "\n--- Financial Report ---\n";
+                    cout << "1. Total balance report\n";
+                    cout << "2. Account report\n";
+                    cout << "3. Loan and lend report\n";
+                    cout << "4. Income and expense report\n";
+                    cout << "0. Go back\n";
                     do
                     {     
+                        cout << "Choose option: ";
+
                         cin >> choice;
                         switch (choice) 
                         {
-                            case 1: { // Bao cao tong so du
-                                cout << "Tong so du cua ban la: " << currentUser->getBalance() << " USD\n";
+                            case 1: 
+                            { // Total balance report
+                                cout << "Your total balance is: " << currentUser->getBalance() << " VND\n";
                                 break;
                             }
-                            case 2: { // Bao cao tai khoan
+                            case 2: { // Account report
                                 currentUser->reportAcc();
                                 break;
                             }
-                            case 3: { // Bao cao khoan vay va khoan cho vay
+                            case 3: { // Loan and lend report
                                 currentUser->reportLoanAndLend();
                                 break;
                             }
                             case 4: 
                             { 
-                                // Bao cao thu chi
+                                // Income and expense report
                                 currentUser->reportInAndOut();
                                 break;
                             }
                             case 0:
                                 break;
                             default:
-                                cout << "Lua chon khong hop le. Vui long thu lai.\n";
+                                cout << "Invalid choice. Please try again.\n";
                                 break;
                         }
                     } while(choice != 0);
@@ -696,10 +708,9 @@ int main()
                 }
                 case 6: 
                 {
-                    cout << "1. Xuat bao cao ra file CSV\n";
-                
-                    cout << "0. Quay lai\n";
-                    cout << "Lua chon: ";
+                    cout << "1. Export report to CSV file\n";
+                    cout << "0. Go back\n";
+                    cout << "Choose option: ";
                     cin >> choice;
                     switch (choice) 
                     {
@@ -711,19 +722,20 @@ int main()
                         case 0: 
                             break;
                         default:
-                            cout << "Lua chon khong hop le. Vui long thu lai.\n";
+                            cout << "Invalid choice. Please try again.\n";
                     }
                     break;
                 }
-                case 0: // Dang xuat
-                    cout << "Dang xuat thanh cong!\n";
-                    currentUser = nullptr; // Xoa trang thai dang nhap
+                case 0: // Log out
+                    cout << "Successfully logged out!\n";
+                    currentUser = nullptr; // Reset the login status
                     break;
                 default:
-                    cout << "Lua chon khong hop le. Vui long thu lai.\n";
+                    cout << "Invalid choice. Please try again.\n";
             }
         }
     } while (true);
 
     return 0;
 }
+
