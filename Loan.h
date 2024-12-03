@@ -3,25 +3,22 @@
 
 #include <string>
 #include <iostream>
-#include <ctime> // Dùng cho xử lý ngày tháng
-#include <sstream> // Để chuyển đổi giữa string và std::tm
-#include <iomanip> // Để sử dụng put_time
-#include <chrono>  // Để sử dụng clock và hệ thống thời gian hiện tại
-#include <cmath> // Để sử dụng sqrt
-#include <math.h> // Để sử dụng pow
-
+#include <ctime> // For date handling
+#include <sstream> // For stringstream usage
+#include <iomanip> // For using put_time
+#include <chrono>  // For using clock and system time
 
 using namespace std;
 
 class Loan 
 {
 private:
-    string lenderName;     // Tên người cho vay
-    double money;          // Số tiền vay
-    double interestRate;   // Lãi suất (%)
-    std::tm dueDate;       // Ngày đến hạn (dạng std::tm)
-    std::tm createDate;    // Ngày tạo khoản vay (dạng std::tm)
-    bool status;           // true: Đã trả, false: Chưa trả
+    string lenderName;     // Lender's name
+    double money;          // Loan amount
+    double interestRate;   // Interest rate (%)
+    std::tm dueDate;       // Due date (std::tm format)
+    std::tm createDate;    // Loan creation date (std::tm format)
+    bool status;           // true: Paid, false: Unpaid
     
 public:
     // Constructor
@@ -32,13 +29,13 @@ public:
     string getDueDateString() const 
     {
         stringstream ss;
-        ss << put_time(&dueDate, "%Y-%m-%d"); // Định dạng "yyyy-mm-dd"
+        ss << put_time(&dueDate, "%Y-%m-%d"); // "yyyy-mm-dd" format
         return ss.str();
     }
 
     string getCreateDateString() const {
         stringstream ss;
-        ss << put_time(&createDate, "%Y-%m-%d"); // Định dạng "yyyy-mm-dd"
+        ss << put_time(&createDate, "%Y-%m-%d"); // "yyyy-mm-dd" format
         return ss.str();
     }
 
@@ -50,8 +47,9 @@ public:
             ", Status: " + (status ? "Paid" : "Unpaid");
     }
 
+    
     // Getter for amount
-    double getAmount() const { return money; }  // Trả về số tiền đã cho vay
+    double getAmount() const { return money; }  // Return the loan amount
 
     // Getter for status
     bool getStatus() const { return status; }
@@ -64,47 +62,47 @@ public:
         status = newStatus;
     }
 
-    // Tính toán số tiền cần trả theo lãi suất kép (tính theo số tháng)
+    // Calculate the total amount to pay based on compound interest (calculated by months)
     double calculateCompoundInterest() const 
     {
-        // Tính số tháng từ ngày tạo đến ngày hiện tại
+        // Calculate months elapsed from creation date to current date
         auto now = chrono::system_clock::now();
         time_t now_time = chrono::system_clock::to_time_t(now);
         std::tm* today = localtime(&now_time);
 
-        // Tính số tháng giữa ngày hiện tại và ngày tạo khoản vay
+        // Calculate the number of months between today and loan creation date
         int monthsElapsed = (today->tm_year - createDate.tm_year) * 12 + (today->tm_mon - createDate.tm_mon);
 
-        // Áp dụng công thức lãi suất kép
-        double totalAmount = money * pow(1 + (interestRate / 100 / 12), monthsElapsed); // Lãi suất kép hàng tháng
+        // Apply compound interest formula (monthly compounding)
+        double totalAmount = money * pow(1 + (interestRate / 100 / 12), monthsElapsed);
         return totalAmount;
     }
 
-    // Hàm thông báo
+    // Notification function to notify the loan status and total amount to pay
     void Notification() const {
-        // Lấy ngày hiện tại (sử dụng chrono và system_clock để có ngày giờ hiện tại chính xác)
+        // Get the current date using chrono and system_clock for accurate current time
         auto now = chrono::system_clock::now();
         time_t now_time = chrono::system_clock::to_time_t(now);
         std::tm* today = localtime(&now_time);
 
-        // Tạo bản sao của ngày đến hạn (dueDate) để tính toán
+        // Make a copy of the due date for calculations
         std::tm dueDateCopy = dueDate;
 
-        // Tính số ngày còn lại bằng cách sử dụng difftime
+        // Calculate remaining days using difftime
         double diffInSeconds = difftime(mktime(&dueDateCopy), mktime(today));
-        int daysRemaining = static_cast<int>(diffInSeconds / (60 * 60 * 24)); // Chuyển đổi giây thành ngày
+        int daysRemaining = static_cast<int>(diffInSeconds / (60 * 60 * 24)); // Convert seconds to days
 
-        double totalAmount = calculateCompoundInterest(); // Sử dụng lãi suất kép
+        double totalAmount = calculateCompoundInterest(); // Calculate total amount using compound interest
 
-        // Kiểm tra và thông báo
+        // Check and display notification
         if (daysRemaining == 0 && !status) {
             cout << "Reminder: Loan from " << lenderName
-                 << " is due today (" << getDueDateString() << ") and still unpaid!" << "T. otal amount to pay: " << totalAmount << " VND" << endl;
+                 << " is due today (" << getDueDateString() << ") and still unpaid! Total amount to pay( up to the present time): " << totalAmount << " VND" << endl;
         } 
         else if (daysRemaining > 0 && !status) {
             cout << "Loan from " << lenderName
                  << " is still unpaid. Due in " << daysRemaining << " days. Due date: " 
-                 << getDueDateString() << ". Total amount to pay: " << totalAmount << " VND" << endl;
+                 << getDueDateString() << ". Total amount to pay (up to the present time): " << totalAmount << " VND" << endl;
         } 
         else if (status) {
             cout << "Loan from " << lenderName << " has been paid. Due date was: " << getDueDateString() << endl;
@@ -112,8 +110,9 @@ public:
         else if (daysRemaining < 0) {
             cout << "Loan from " << lenderName
                  << " is overdue. Was due " << -daysRemaining << " days ago. Due date: " 
-                 << getDueDateString() << ". Total amount to pay: " << totalAmount << " VND" << endl;
+                 << getDueDateString() << ". Total amount to pay (up to the present time): " << totalAmount << " VND" << endl;
         }
     }
 };
+
 #endif

@@ -143,18 +143,17 @@ std::tm getValidDateFromUser(const std::string& prompt, int allowFutureDate)
 
 void manageTransaction(User* currentUser) 
 {
-    // Check if user has any account
+    // Kiểm tra xem người dùng có tài khoản hay không
     if (currentUser->getAccounts().empty()) 
     {
         cout << "You do not have any accounts. Please create an account first to perform a transaction.\n";
         return;
     }
 
-    // Show user accounts
+    // Hiển thị các tài khoản người dùng có
     cout << "Choose a transaction account:\n";
     int i = 1;
-    for (const auto& acc : currentUser->getAccounts())
-    {
+    for (const auto& acc : currentUser->getAccounts()) {
         cout << i++ << ". " << acc.getAccountName() << " - " << acc.getBalance() << " VND\n";
     }
 
@@ -165,39 +164,93 @@ void manageTransaction(User* currentUser)
         cout << "Invalid choice. Please try again.\n";
         return;
     }
-    // Get the selected account
+
+    // Lấy tài khoản đã chọn
     Account& selectedAccount = currentUser->getAccounts()[accChoice - 1];
     
     double amount;
     string date, type, category, note;
     
-    // Get transaction details
-    // Sử dụng to_string(currentUser->getTransactions().size() + 1) để tạo ID giao dịch tự động
-    string transID = to_string(currentUser->getTransactions().size() + 1);
-    cout << "Transaction ID: " << transID << endl; // Automatically generated ID
+    // Tạo ID giao dịch tự động
+    string transID = to_string(currentUser->getTransactions().size() + 1);  
+    cout << "Transaction ID: " << transID << endl;
 
     cout << "Enter amount: ";
     cin >> amount;
 
-    // Get transaction date using getValidDateFromUser to ensure valid date
+    // Lấy ngày giao dịch từ người dùng
     std::tm transDate = getValidDateFromUser("Enter transaction date (yyyy-mm-dd): ", 0);
 
     cout << "Transaction type (1: Income / 0: Expense): ";
     cin >> type;
-    cout << "Category: ";
-    cin.ignore();  // To clear the newline character in the buffer
-    getline(cin, category);
+
+    // Hiển thị danh sách category dựa trên loại giao dịch
+    if (type == "1") {
+        // Nếu là thu, hiển thị danh mục thu
+        cout << "Choose category for Income:\n";
+        cout << "1. Salary\n";
+        cout << "2. Gift\n";
+        cout << "3. Bonus\n";
+        cout << "4. Other Income\n";
+    } else if (type == "0") {
+        // Nếu là chi, hiển thị danh mục chi
+        cout << "Choose category for Expense:\n";
+        cout << "1. Shopping\n";
+        cout << "2. Food\n";
+        cout << "3. Bills\n";
+        cout << "4. Entertainment\n";
+        cout << "5. Other Expenses\n";
+    } else {
+        cout << "Invalid transaction type. Please enter 1 for 'Income' or 0 for 'Expense'.\n";
+        return;
+    }
+
+    // Nhận số chọn từ người dùng để xác định category
+    int categoryChoice;
+    cout << "Enter the number corresponding to the category: ";
+    cin >> categoryChoice;
+
+    // Gán category dựa trên số người dùng chọn
+    if (type == "1") {  // Thu
+        switch (categoryChoice) 
+        {
+            case 1: category = "Salary"; break;
+            case 2: category = "Gift"; break;
+            case 3: category = "Bonus"; break;
+            case 4: category = "Other Income"; break;
+            default: 
+                cout << "Invalid choice. Defaulting to 'Other Income'.\n";
+                category = "Other Income";
+                break;
+        }
+    } else if (type == "0") 
+    {  // Chi
+        switch (categoryChoice) {
+            case 1: category = "Shopping"; break;
+            case 2: category = "Food"; break;
+            case 3: category = "Bills"; break;
+            case 4: category = "Entertainment"; break;
+            case 5: category = "Other Expenses"; break;
+            default: 
+                cout << "Invalid choice. Defaulting to 'Other Expenses'.\n";
+                category = "Other Expenses";
+                break;
+        }
+    }
+
+    // Nhập ghi chú giao dịch
     cout << "Note: ";
+    cin.ignore();  // Đảm bảo không bỏ qua ký tự '\n' còn lại
     getline(cin, note);
 
-    // Process the transaction based on type and update account balance
+    // Xử lý giao dịch và cập nhật số dư tài khoản
     if (type == "1") {
-        // Income transaction, add money to account
+        // Giao dịch thu, cộng tiền vào tài khoản
         selectedAccount.updateBalance(amount);
         currentUser->updateBalance(amount);
         cout << "Income transaction added successfully. Account balance updated!\n";
     } else if (type == "0") {
-        // Expense transaction, subtract money from account
+        // Giao dịch chi, trừ tiền từ tài khoản
         if (selectedAccount.getBalance() >= amount) {
             selectedAccount.updateBalance(-amount);
             currentUser->updateBalance(-amount);
@@ -211,10 +264,9 @@ void manageTransaction(User* currentUser)
         return;
     }
 
-    // Add the transaction to the transaction history with the automatically generated ID
+    // Thêm giao dịch vào lịch sử giao dịch với ID tự động
     currentUser->addTrans(Transaction(transID, amount, transDate, type, category, note));
 }
-
 
 void exportReportToCSV(User* currentUser) 
 {

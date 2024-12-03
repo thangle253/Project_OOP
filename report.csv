@@ -19,10 +19,10 @@ Debtor: Khang, Money: 500.000000, Rate: 1.000000%, Due Date: 2025-01-01, Status:
 
 --- Bao Cao Thu Chi ---
 Type,ID,Category,Date,Amount
-Expense,1,Di cho,2024-10-12,25.00 USD
-Income,2,Mama bank,2024-03-15,1000.00 USD
-Income,3,Tiền Học Bong,2024-03-25,16000.00 USD
-Expense,4,An uong,2024-12-02,15.00 USD
+Expense,1,Shopping,2024-10-12,25.00 USD
+Income,2,Gift,2024-03-15,1000.00 USD
+Income,3,Other Income,2024-03-25,16000.00 USD
+Expense,4,Bills,2024-12-02,15.00 USD
 
 Tong Thu,17000.00 USD
 Tong Chi,40.00 USD
