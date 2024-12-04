@@ -49,9 +49,28 @@ public:
     bool getStatus() const {
         return status;
     }
+    // Kiểm tra ngày hợp lệ
+    bool isValidDate(int year, int month, int day) {
+        if (year < 0 || month < 1 || month > 12 || day < 1) return false;
+
+        // Số ngày trong từng tháng
+        const int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+        // Kiểm tra năm nhuận
+        bool isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+
+        int maxDay = daysInMonth[month - 1];
+        if (month == 2 && isLeapYear) maxDay = 29; // Tháng 2 năm nhuận
+
+        return day <= maxDay;
+    }
 
     // Cập nhật thông tin khoản vay
     void update(const tm& newDueDate, double newRate, bool newStatus) {
+        // Kiểm tra tính hợp lệ của ngày
+        if (!isValidDate(newDueDate.tm_year + 1900, newDueDate.tm_mon + 1, newDueDate.tm_mday)) {
+        throw std::invalid_argument("Invalid due date: The specified date does not exist.");
+        }
         dueDate = newDueDate;        // Ngày đến hạn mới
         interestRate = newRate;      // Lãi suất mới
         status = newStatus;          // Trạng thái mới

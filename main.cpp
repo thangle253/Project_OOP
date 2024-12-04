@@ -7,7 +7,8 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
-
+#include <string>
+#include <stdexcept>
 using namespace std;
 
 // Show login menu
@@ -93,11 +94,6 @@ void showMainMenu()
     cout << "Choose an option: ";
 }
 
-#include <iostream>
-#include <string>
-#include <ctime>
-#include <stdexcept>
-#include <sstream>
 
 // Kiểm tra ngày hợp lệ
 bool isValidDate(int year, int month, int day) {
@@ -165,6 +161,22 @@ std::tm getValidDateFromUser(const std::string& prompt, int allowFutureDate) {
                     throw std::invalid_argument("Date cannot be in the future.");
                 }
             }
+            // Nếu cho phép nhập ngày quá khứ
+            else if (allowFutureDate == 1) {
+                std::time_t currentTime = std::time(nullptr); // Lấy thời gian hiện tại
+                std::tm* currentDate = std::localtime(&currentTime); // Chuyển sang std::tm
+
+                // So sánh ngày nhập với ngày hiện tại
+                if (date.tm_year < currentDate->tm_year || 
+                    (date.tm_year == currentDate->tm_year && date.tm_mon < currentDate->tm_mon) ||
+                    (date.tm_year == currentDate->tm_year && date.tm_mon == currentDate->tm_mon && date.tm_mday < currentDate->tm_mday)) {
+                    throw std::invalid_argument("Date cannot be in the past.");
+                    }
+
+                }
+
+
+
 
             break; // Thoát vòng lặp nếu không có lỗi
         } catch (const std::invalid_argument& e) {
@@ -690,10 +702,7 @@ int main()
 
                             // Enter and validate due date
                             std::tm dueDate = getValidDateFromUser("Enter due date (yyyy-mm-dd): ", 1);
-
-                            // Enter lend status
-                            cout << "Status (0: Unpaid, 1: Paid): ";
-                            cin >> status;
+                            status = 0;
 
                             // Add the lend to the list
                             currentUser->addLend(Lend(debtorName, amount, interestRate, dueDate, createDate, status));
@@ -739,9 +748,6 @@ int main()
                                             cout << "Interest rate cannot be negative. Please enter a positive value.\n";
                                         }
                                     } while (newRate < 0);
-                                    // Input new due date and validate
-                                    cout << "Enter new due date (yyyy-mm-dd): ";
-                                    cin >> newDueDateStr;
                                     // Validate and convert newDueDate
                                     std::tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
                                     // Input new status (0: Unpaid, 1: Paid)

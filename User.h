@@ -257,12 +257,10 @@ class User
                     if (newStatus) 
                     {
                         // Cập nhật số dư của người cho vay
-                        double amount = lend.getAmount();  // Số tiền đã cho vay
+                        double amount = lend.getAmount()+ lend.calculateCompoundInterest();  // Số tiền đã cho vay
                         this->money += amount;  // Cộng số tiền đã trả vào số dư tài khoản
                         cout << "Your account balance has been updated after the borrower repaid the loan.\n";
                     }
-
-                    cout << "The borrower's loan " << debtorName << " is updated successfully..\n";
                     return;
                 }
             }
