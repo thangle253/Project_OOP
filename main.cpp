@@ -450,9 +450,12 @@ int main()
                         cout << "Enter account name: ";
                         cin.ignore();  // Đảm bảo không bỏ qua ký tự '\n' còn lại
                         getline(cin, accName);
-                        cout << "Enter initial balance: ";
-                        cin >> balance;
-
+                        do {
+                            cout << "Enter the initial balance: ";
+                            cin >> balance;
+                            if (balance <= 0)
+                                    cout << "Initial balance cannot be negative. Please enter a positive value.\n";
+                        } while (balance <= 0);
                         // Add new account with generated ID
                         currentUser->addAccount(Account(accID, accName, balance));
                         cout << "Account has been added successfully!\n";
