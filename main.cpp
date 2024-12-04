@@ -581,7 +581,6 @@ int main()
 
                                     // Update loan details
                                     currentUser->updateLoan(lenderName, newRate, newDueDate, newStatus);
-                                    cout << "Loan of " << lenderName << " updated successfully.\n";
                                     break;  // Exit the loop after successful update
                                 }
                             }
@@ -732,9 +731,7 @@ int main()
                             cout << "Enter debtor's name to remove lend: ";
                             cin.ignore();
                             getline(cin, debtorName);
-
                             currentUser->removeLend(debtorName);
-                            cout << "Lend has been removed successfully.\n";
                             break;
                         }
                         case 0:
