@@ -5,6 +5,7 @@
 #include <ctime>    // Để sử dụng std::tm
 #include <sstream>  // Để sử dụng stringstream
 #include <iomanip>  // Để sử dụng put_time
+#include <cmath>
 
 using namespace std;
 
@@ -40,8 +41,8 @@ class Transaction
 
         string getTransactionDetail() const 
         {
-            return "ID: " + transID + ", Amount: " + to_string(money) +
-                   ", Date: " + getDateString() +
+            return "ID: " + transID + ", Amount: " + to_string(round(money)) +
+                   "VND, Date: " + getDateString() +
                    ", Type: " + transactionType +
                    ", Category: " + category + ", Note: " + note;
         }

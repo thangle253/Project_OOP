@@ -219,9 +219,17 @@ void manageTransaction(User* currentUser)
     // Tạo ID giao dịch tự động
     string transID = to_string(currentUser->getTransactions().size() + 1);  
     cout << "Transaction ID: " << transID << endl;
+    do {
+        cout << "Enter amount: ";
+        cin >> amount;
 
-    cout << "Enter amount: ";
-    cin >> amount;
+        if (amount <= 0) 
+            cout << "Amount cannot be negative. Please enter a positive value.\n";
+        else if(amount > selectedAccount.getBalance())
+            cout << "Amount cannot be greater than your balance. Please enter a smaller value.\n";
+        else
+            break;
+    } while (true);
 
     // Lấy ngày giao dịch từ người dùng
     std::tm transDate = getValidDateFromUser("Enter transaction date (yyyy-mm-dd): ", 0);
@@ -615,7 +623,7 @@ int main()
                             cout << "Loan added successfully!\n";
 
                             // Update balance when borrowing
-                            currentUser->updateBalance(-amount);
+                            currentUser->updateBalance(amount);
                             break;
                         }
 
@@ -651,9 +659,8 @@ int main()
                                     do {
                                         cout << "Enter new interest rate (%): ";
                                         cin >> newRate;
-                                        if (newRate < 0) {
+                                        if (newRate < 0)
                                             cout << "Interest rate cannot be negative. Please enter a positive value.\n";
-                                        }
                                     } while (newRate < 0);
 
                                     // Input new due date using getValidDateFromUser
@@ -683,6 +690,7 @@ int main()
                             cin.ignore();
                             getline(cin, lenderName);
                             currentUser->removeLoan(lenderName);
+                            
                             break;
                         }
                        

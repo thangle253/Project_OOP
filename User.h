@@ -202,6 +202,11 @@ class User
                     if (newStatus) 
                     {
                         double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
+                        this->updateBalance(-amount); // Cập nhật số dư của người cho vay
+                        cout << "The lender's balance has been updated after the loan repayment.\n";
+                    }
+                    else{
+                        double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
                         this->updateBalance(amount); // Cập nhật số dư của người cho vay
                         cout << "The lender's balance has been updated after the loan repayment.\n";
                     }
@@ -256,9 +261,14 @@ class User
                     if (newStatus) 
                     {
                         // Cập nhật số dư của người cho vay
-
                         double amount = lend.calculateCompoundInterest();  // Số tiền đã cho vay + tiền lãi
                         this->money += amount;  // Cộng số tiền đã trả vào số dư tài khoản
+                        cout << "Your account balance has been updated after the borrower repaid the loan.\n";
+                    }
+                    else{
+                        // Cập nhật số dư của người cho vay
+                        double amount = lend.calculateCompoundInterest();  // Số tiền đã cho vay + tiền lãi
+                        this->money -= amount;  // Cộng số tiền đã trả vào số dư tài khoản
                         cout << "Your account balance has been updated after the borrower repaid the loan.\n";
                     }
                     return;
@@ -272,9 +282,7 @@ class User
         {
             cout << "Lend History:\n";
             for (const auto& lend : lends) 
-            {
                 lend.getBorrowDetail();
-            }
         }
 
         // Báo cáo
@@ -287,9 +295,7 @@ class User
         {
             cout << "Account Balances:\n";
             for (const auto& acc : accounts) 
-            {
                 cout << acc.getAccountName() << ": " << acc.getBalance() << " VND\n";
-            }
         }
 
         void reportLoanAndLend() const

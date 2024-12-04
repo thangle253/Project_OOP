@@ -42,14 +42,14 @@ public:
     // Lấy chi tiết khoản vay
     string getLoanDetail() const 
     {
-        return "Lender: " + lenderName + ", Money: " + to_string(round(money)) + ", Rate: " + to_string(round(interestRate *100)/100) +
+        return "Lender: " + lenderName + ", Money: " + to_string(money) + "VND, Rate: " + to_string(interestRate) +
             "%, Due Date: " + getDueDateString() + ", Created On: " + getCreateDateString() + 
             ", Status: " + (status ? "Paid" : "Unpaid");
     }
 
     
     //Get số tiền vay
-    double getAmount() const { return round(money); }  // Trả về số tiền vay
+    double getAmount() const { return money; }  // Trả về số tiền vay
 
     // Get trạng thái khoản vay
     bool getStatus() const { return status; }
