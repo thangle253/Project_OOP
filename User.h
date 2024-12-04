@@ -54,7 +54,7 @@ class User
 
                 // Trừ số dư tài khoản khỏi tổng số dư người dùng
                 money -= balance;
-                cout << "The account balance of " << accID << ": " << balance << " USD has been deducted from the user's balance";
+                cout << "The account balance of " << accID << ": " << balance << " VND has been deducted from the user's balance";
                 // Xóa tài khoản khỏi danh sách
                 accounts.erase(it);
                 cout << "The account " << accID << " has been deleted.\n";
@@ -101,7 +101,7 @@ class User
 
             fromAcc->updateBalance(-amount);
             toAcc->updateBalance(amount);
-            cout << "Transfer successful: " << amount << " USD from " << fromAccID << " to " << toAccID << endl;
+            cout << "Transfer successful: " << amount << " VND from " << fromAccID << " to " << toAccID << endl;
         }
 
 
@@ -201,11 +201,10 @@ class User
                     // Nếu trạng thái là "đã trả", cập nhật số dư của người cho vay
                     if (newStatus) 
                     {
-                        double amount = loan.getAmount();  // Lấy số tiền đã cho vay
+                        double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
                         this->updateBalance(amount); // Cập nhật số dư của người cho vay
                         cout << "The lender's balance has been updated after the loan repayment.\n";
                     }
-                    cout << "The loan of " << lenderName << " has been successfully updated.\n";
                     return;
                 }
             }
@@ -257,7 +256,7 @@ class User
                     if (newStatus) 
                     {
                         // Cập nhật số dư của người cho vay
-                        double amount = lend.getAmount()+ lend.calculateCompoundInterest();  // Số tiền đã cho vay
+                        double amount =lend.calculateCompoundInterest();  // Số tiền đã cho vay
                         this->money += amount;  // Cộng số tiền đã trả vào số dư tài khoản
                         cout << "Your account balance has been updated after the borrower repaid the loan.\n";
                     }
@@ -289,7 +288,7 @@ class User
             cout << "Account Balances:\n";
             for (const auto& acc : accounts) 
             {
-                cout << acc.getAccountName() << ": " << acc.getBalance() << " USD\n";
+                cout << acc.getAccountName() << ": " << acc.getBalance() << " VND\n";
             }
         }
 
@@ -327,12 +326,12 @@ class User
                     cout << "ID: " << trans.getID() 
                         << ", Category: " << trans.getCategory() 
                         << ", Date: " << trans.getDate() 
-                        << ", Amount: " << trans.getAmount() << " USD\n";
+                        << ", Amount: " << trans.getAmount() << " VND\n";
                 }
             }
 
             // In ra tổng thu
-            cout << "\nTotal income: " << totalIncome << " USD\n";
+            cout << "\nTotal income: " << totalIncome << " VND\n";
 
             // In ra tất cả các khoản chi
             cout << "\n--- Expenses ---\n";
@@ -345,13 +344,13 @@ class User
                     cout << "ID: " << trans.getID() 
                         << ", Category: " << trans.getCategory() 
                         << ", Date: " << trans.getDate() 
-                        << ", Amount: " << trans.getAmount() << " USD\n";
+                        << ", Amount: " << trans.getAmount() << " VND\n";
                 }
             }
 
             // In ra tổng chi
-            cout << "\nTotal expenses: " << totalExpense << " USD\n";
-            cout << "Total income and expenses: " << totalIncome - totalExpense << " USD\n";
+            cout << "\nTotal expenses: " << totalExpense << " VND\n";
+            cout << "Total income and expenses: " << totalIncome - totalExpense << " VND\n";
         }
         // Tổng số dư
         double getBalance() const 
