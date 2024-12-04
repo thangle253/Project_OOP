@@ -463,10 +463,14 @@ int main()
                         double newBalance;
                         cout << "Enter the account ID to update: ";
                         cin >> accID;
-                        cout << "Enter the new balance: ";
-                        cin >> newBalance;
+                        do {
+                                cout << "Enter the new balance: ";
+                                cin >> newBalance;
+                                if (newBalance <= 0)
+                                    cout << "Newbalance cannot be negative. Please enter a positive value.\n";
+                            } while (newBalance <= 0);
                         currentUser->updateAccount(accID, newBalance);
-                        cout << "Account balance has been updated.\n";
+                        
                     }
                     else if (accountChoice == 4) // Banking (Chuyển tiền)
                     { 
@@ -579,7 +583,7 @@ int main()
                         { // Add loan
                             string debtorName;
                             double amount, interestRate;
-                            bool status;
+                            bool status = 0;
 
                             cout << "Enter lender's name: ";
                             cin.ignore(); // To ensure no space is skipped when entering name
@@ -605,9 +609,6 @@ int main()
                             // Use getValidDateFromUser function to input and validate creation and due dates
                             std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
                             std::tm dueDate = getValidDateFromUser("Enter due date (yyyy-mm-dd): ", 1);
-
-                            cout << "Status (0: Unpaid, 1: Paid): ";
-                            cin >> status;
 
                             // Add the loan to the list
                             currentUser->addLoan(Loan(debtorName, amount, interestRate, dueDate, createDate, status));
@@ -722,10 +723,14 @@ int main()
                             do {
                                 cout << "Enter lend amount: ";
                                 cin >> amount;
-                                if (amount <= 0) {
+    
+                                if (amount <= 0) 
                                     cout << "Amount cannot be negative. Please enter a positive value.\n";
-                                }
-                            } while (amount <= 0);
+                                else if(amount > currentUser->getBalance())
+                                    cout << "Amount cannot be greater than your balance. Please enter a smaller value.\n";
+                                else
+                                    break;
+                            } while (true);
 
                             // Enter interest rate
                             do {
@@ -786,7 +791,11 @@ int main()
                                         if (newRate < 0) {
                                             cout << "Interest rate cannot be negative. Please enter a positive value.\n";
                                         }
-                                    } while (newRate < 0);
+                                        else if(newRate > 100)
+                                            cout << "Interest rate cannot be greater than 100%. Please enter a smaller value.\n";
+                                        else   
+                                            break;
+                                    } while (true);
                                     // Validate and convert newDueDate
                                     std::tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
                                     // Input new status (0: Unpaid, 1: Paid)

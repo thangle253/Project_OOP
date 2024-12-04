@@ -36,7 +36,7 @@ public:
 
     // Lấy chi tiết khoản vay
     string getBorrowDetail() const {
-        return "Debtor: " + debtorName + ", Money: " + to_string(money) + ", Rate: " + to_string(interestRate) +
+        return "Debtor: " + debtorName + ", Money: " + to_string(round(money)) + ", Rate: " + to_string(round(interestRate*100)/100) +
                "%, Due Date: " + getDateString(dueDate) + ", Status: " + (status ? "Paid" : "Unpaid");
     }
 

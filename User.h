@@ -74,7 +74,7 @@ class User
                     money -= acc.getBalance();
                     acc.updateBalance(newBalance - acc.getBalance());
                     money += acc.getBalance();
-                    cout << "The account with " << accID << " has been successfully updated.\n";
+                    cout << "The account: " << accID << " has been successfully updated.\n";
                     return;
                 }
             }
@@ -324,9 +324,10 @@ class User
                     totalIncome += trans.getAmount();
                     // In ra mỗi khoản thu trong một dòng với thông tin ID, danh mục, ngày tháng, và số tiền
                     cout << "ID: " << trans.getID() 
-                        << ", Category: " << trans.getCategory() 
+                        << ", Amount: " << trans.getAmount() << " VND\n"
                         << ", Date: " << trans.getDate() 
-                        << ", Amount: " << trans.getAmount() << " VND\n";
+                        << ", Category: " << trans.getCategory() 
+                        << ", Note: " << trans.getNote() << "\n";
                 }
             }
 
