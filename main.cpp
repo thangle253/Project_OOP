@@ -642,6 +642,7 @@ int main()
                             string lenderName;
                             double newRate;
                             bool newStatus;
+                            tm newDueDate; // Move the variable outside of the switch statement
 
                             cout << "Enter lender's name to update: ";
                             cin.ignore();
@@ -655,24 +656,51 @@ int main()
                                 {
                                     loanFound = true;
 
-                                    // Input new interest rate
-                                    do {
-                                        cout << "Enter new interest rate (%): ";
-                                        cin >> newRate;
-                                        if (newRate < 0)
-                                            cout << "Interest rate cannot be negative. Please enter a positive value.\n";
-                                    } while (newRate < 0);
+                                    // Ask the user which field they want to update
+                                    cout << "What would you like to update?\n";
+                                    cout << "1. Interest rate\n";
+                                    cout << "2. Due date\n";
+                                    cout << "3. Loan status\n";
+                                    cout << "Enter the number of the field to update: ";
+                                    int choice;
+                                    cin >> choice;
 
-                                    // Input new due date using getValidDateFromUser
-                                    tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
-                                    
-                                    // Input new status (0: Unpaid, 1: Paid)
-                                    cout << "Enter new status (0: Unpaid, 1: Paid): ";
-                                    cin >> newStatus;
+                                    switch (choice) 
+                                    {
+                                        case 1: 
+                                            // Input new interest rate
+                                            do {
+                                                cout << "Enter new interest rate (%): ";
+                                                cin >> newRate;
+                                                if (newRate < 0)
+                                                    cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                                else if (newRate > 100)
+                                                    cout << "Interest rate cannot be greater than 100%. Please enter a smaller value.\n";
+                                            } while (newRate < 0 || newRate > 100);
+                                            
+                                            currentUser->updateLoan(lenderName, newRate, loan.getDueDate(), loan.getStatus());
+                                            cout << "Interest rate updated successfully.\n";
+                                            break;
 
-                                    // Update loan details
-                                    currentUser->updateLoan(lenderName, newRate, newDueDate, newStatus);
-                                    cout << "The loan of " << lenderName << " has been successfully updated.\n";
+                                        case 2: 
+                                            // Input new due date using getValidDateFromUser
+                                            newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1); // Allow future date
+                                            currentUser->updateLoan(lenderName, loan.getInterestRate(), newDueDate, loan.getStatus());
+                                            cout << "Due date updated successfully.\n";
+                                            break;
+
+                                        case 3: 
+                                            // Input new status (0: Unpaid, 1: Paid)
+                                            cout << "Enter new status (0: Unpaid, 1: Paid): ";
+                                            cin >> newStatus;
+                                            currentUser->updateLoan(lenderName, loan.getInterestRate(), loan.getDueDate(), newStatus);
+                                            cout << "Loan status updated successfully.\n";
+                                            break;
+
+                                        default:
+                                            cout << "Invalid choice. No updates were made.\n";
+                                            break;
+                                    }
                                     break;  // Exit the loop after successful update
                                 }
                             }
@@ -702,6 +730,7 @@ int main()
                     }
                     break;
                 }
+                
                 case 4: // Manage lends
                 {
                     int lendChoice;
@@ -777,8 +806,8 @@ int main()
                             // Update lend
                             string debtorName;
                             double newRate;
-                            string newDueDateStr;
                             bool newStatus;
+                            std::tm newDueDate; // Move the variable outside of the switch
 
                             cout << "Enter debtor's name to update: ";
                             cin.ignore();
@@ -792,29 +821,58 @@ int main()
                                 {
                                     lendFound = true;
 
-                                    // Input new interest rate
-                                    do {
-                                        cout << "Enter new interest rate (%): ";
-                                        cin >> newRate;
-                                        if (newRate < 0) {
-                                            cout << "Interest rate cannot be negative. Please enter a positive value.\n";
-                                        }
-                                        else if(newRate > 100)
-                                            cout << "Interest rate cannot be greater than 100%. Please enter a smaller value.\n";
-                                        else   
+                                    // Ask the user which field they want to update
+                                    cout << "What would you like to update?\n";
+                                    cout << "1. Interest rate\n";
+                                    cout << "2. Due date\n";
+                                    cout << "3. Lend status\n";                             
+                                    cout << "Enter the number of the field to update: ";
+                                    int choice;
+                                    cin >> choice;
+
+                                    switch (choice) 
+                                    {
+                                        case 1: 
+                                            // Input new interest rate
+                                            do {
+                                                cout << "Enter new interest rate (%): ";
+                                                cin >> newRate;
+                                                if (newRate < 0) {
+                                                    cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                                } else if (newRate > 100) {
+                                                    cout << "Interest rate cannot be greater than 100%. Please enter a smaller value.\n";
+                                                } else {
+                                                    break;
+                                                }
+                                            } while (true);
+
+                                            currentUser->updateLend(lend.getDebtorName(), newRate, lend.getDueDate(), lend.getStatus()); // Update interest rate only
+                                            cout << "Interest rate updated successfully.\n";
                                             break;
-                                    } while (true);
-                                    // Validate and convert newDueDate
-                                    std::tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
-                                    // Input new status (0: Unpaid, 1: Paid)
-                                    cout << "Enter new status (0: Unpaid, 1: Paid): ";
-                                    cin >> newStatus;
-                                    // Update lend details
-                                    currentUser->updateLend(debtorName, newRate, newDueDate, newStatus);
-                                    cout << "Lend of " << debtorName << " updated successfully.\n";
+
+                                        case 2: 
+                                            // Input new due date using getValidDateFromUser
+                                            newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1); // Allow future date
+                                            currentUser->updateLend(lend.getDebtorName(), lend.getInterestRate(), newDueDate, lend.getStatus()); // Update due date only
+                                            cout << "Due date updated successfully.\n";
+                                            break;
+
+                                        case 3: 
+                                            // Input new status (0: Unpaid, 1: Paid)
+                                            cout << "Enter new status (0: Unpaid, 1: Paid): ";
+                                            cin >> newStatus;
+                                            currentUser->updateLend(lend.getDebtorName(), lend.getInterestRate(), lend.getDueDate(), newStatus); // Update status only
+                                            cout << "Loan status updated successfully.\n";
+                                            break;
+
+                                        default:
+                                            cout << "Invalid choice. No updates were made.\n";
+                                            break;
+                                    }
                                     break;  // Exit the loop after successful update
                                 }
                             }
+
                             if (!lendFound) {
                                 cout << "No lend found for debtor " << debtorName << ".\n";
                             }
@@ -838,6 +896,7 @@ int main()
                     }
                     break;
                 }
+                
                 case 5: // Financial report
                 {
                     cout << "\n--- Financial Report ---\n";

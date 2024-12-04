@@ -49,6 +49,19 @@ public:
     bool getStatus() const {
         return status;
     }
+    // Lấy ngày đến hạn
+    tm getDueDate() const {
+        return dueDate;
+    }
+    // Lấy lãi suất
+    double getInterestRate() const {
+        return interestRate;
+    }
+    // Lấy tên người vay
+    string getDebtorName() const {
+        return debtorName;
+    }
+    
     // Kiểm tra ngày hợp lệ
     bool isValidDate(int year, int month, int day) {
         if (year < 0 || month < 1 || month > 12 || day < 1) return false;

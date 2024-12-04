@@ -47,12 +47,20 @@ public:
             ", Status: " + (status ? "Paid" : "Unpaid");
     }
 
+    //get name
+    string getLenderName() const { return lenderName; } // Trả về tên người cho vay
     
     //Get số tiền vay
     double getAmount() const { return money; }  // Trả về số tiền vay
 
     // Get trạng thái khoản vay
     bool getStatus() const { return status; }
+
+    // Get ngày đến hạn
+    std::tm getDueDate() const { return dueDate; }
+    // Get lãi suất
+    double getInterestRate() const { return interestRate; }
+
 
     // Cập nhật thông tin khoản vay
     void update(const std::tm& newDate, double newRate, bool newStatus) 
