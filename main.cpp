@@ -321,7 +321,7 @@ void exportReportToCSV(User* currentUser)
     ofstream reportFile(filename);
 
     if (!reportFile) {
-        cout << "Khong the mo file de ghi!\n";
+        cout << "Cannot open file for writing!\n";
         return;
     }
 
@@ -385,7 +385,7 @@ void exportReportToCSV(User* currentUser)
 
     // Đóng file
     reportFile.close();
-    cout << "Bao cao da duoc xuat ra file report.csv\n";
+    cout << "The report has been exported to a file \""<<filename<<"\"";
 }
 
 int main() 
