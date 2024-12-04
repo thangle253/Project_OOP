@@ -324,14 +324,14 @@ void exportReportToCSV(User* currentUser)
     }
 
     // Ghi tiêu đề báo cáo
-    reportFile << "Tong So Du," << fixed << setprecision(2) << currentUser->getBalance() << " USD\n";
+    reportFile << "Tong So Du," << fixed << setprecision(2) << currentUser->getBalance() << " VND\n";
 
     // Báo cáo tài khoản
     reportFile << "\n--- Danh Sach Tai Khoan ---\n";
     reportFile << "Tai Khoan,So Du\n";  // Tiêu đề cột cho các tài khoản
     for (const auto& acc : currentUser->getAccounts()) {
         reportFile << acc.getAccountName() 
-                   << "," << fixed << setprecision(2) << acc.getBalance() << " USD\n";
+                   << "," << fixed << setprecision(2) << acc.getBalance() << " VND\n";
     }
 
     // Báo cáo khoản vay
@@ -366,7 +366,7 @@ void exportReportToCSV(User* currentUser)
             reportFile << "Income," << trans.getID() 
                        << "," << trans.getCategory() 
                        << "," << trans.getDate() 
-                       << "," << trans.getAmount() << " USD\n";
+                       << "," << trans.getAmount() << " VND\n";
         } 
         else if (trans.getType() == "0") 
         {  // Khoan chi
@@ -374,12 +374,12 @@ void exportReportToCSV(User* currentUser)
             reportFile << "Expense," << trans.getID() 
                        << "," << trans.getCategory() 
                        << "," << trans.getDate() 
-                       << "," << trans.getAmount() << " USD\n";
+                       << "," << trans.getAmount() << " VND\n";
         }
     }
-    reportFile << "\nTong Thu," << totalIncome << " USD\n";
-    reportFile << "Tong Chi," << totalExpense << " USD\n";
-    reportFile << "Chenh Lech Thu Chi," << totalIncome - totalExpense << " USD\n";
+    reportFile << "\nTong Thu," << totalIncome << " VND\n";
+    reportFile << "Tong Chi," << totalExpense << " VND\n";
+    reportFile << "Chenh Lech Thu Chi," << totalIncome - totalExpense << " VND\n";
 
     // Đóng file
     reportFile.close();
@@ -662,6 +662,7 @@ int main()
 
                                     // Update loan details
                                     currentUser->updateLoan(lenderName, newRate, newDueDate, newStatus);
+                                    cout << "The loan of " << lenderName << " has been successfully updated.\n";
                                     break;  // Exit the loop after successful update
                                 }
                             }
