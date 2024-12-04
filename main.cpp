@@ -87,7 +87,7 @@ void showMainMenu()
     cout << "3. Manage loans\n";
     cout << "4. Manage lends\n";
     cout << "5. Financial report\n";
-    cout << "6. Special features\n";
+    cout << "6. Export report to file CSV\n";
     cout << "0. Logout\n";
     cout << "====================\n";
     cout << "Choose an option: ";
@@ -774,23 +774,8 @@ int main()
                 }
                 case 6: 
                 {
-                    cout << "1. Export report to CSV file\n";
-                    cout << "0. Go back\n";
-                    cout << "Choose option: ";
-                    cin >> choice;
-                    switch (choice) 
-                    {
-                        case 1: 
-                        {
-                            exportReportToCSV(currentUser);
-                            break;
-                        }
-                        case 0: 
-                            break;
-                        default:
-                            cout << "Invalid choice. Please try again.\n";
-                    }
-                    break;
+                    exportReportToCSV(currentUser);
+                    break;    
                 }
                 case 0: // Log out
                     cout << "Successfully logged out!\n";
