@@ -87,7 +87,7 @@ void showMainMenu()
     cout << "3. Manage loans\n";
     cout << "4. Manage lends\n";
     cout << "5. Financial report\n";
-    cout << "6. Special features\n";
+    cout << "6. Export report to file CSV\n";
     cout << "0. Logout\n";
     cout << "====================\n";
     cout << "Choose an option: ";
@@ -534,12 +534,23 @@ int main()
                             cout << "Enter lender's name: ";
                             cin.ignore(); // To ensure no space is skipped when entering name
                             getline(cin, debtorName);
-                            
-                            cout << "Enter loan amount: ";
-                            cin >> amount;
+                            //Enter loan amount 
+                            do {
+                                cout << "Enter loan amount: ";
+                                cin >> amount;
+                                if (amount <= 0) {
+                                    cout << "Amount cannot be negative. Please enter a positive value.\n";
+                                }
+                            } while (amount <= 0);
 
-                            cout << "Enter interest rate (%): ";
-                            cin >> interestRate;
+                            // Enter interest rate
+                            do {
+                                cout << "Enter interest rate (%): ";
+                                cin >> interestRate;
+                                if (interestRate < 0) {
+                                    cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                }
+                            } while (interestRate < 0);
 
                             // Use getValidDateFromUser function to input and validate creation and due dates
                             std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
@@ -586,8 +597,13 @@ int main()
                                     loanFound = true;
 
                                     // Input new interest rate
-                                    cout << "Enter new interest rate (%): ";
-                                    cin >> newRate;
+                                    do {
+                                        cout << "Enter new interest rate (%): ";
+                                        cin >> newRate;
+                                        if (newRate < 0) {
+                                            cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                        }
+                                    } while (newRate < 0);
 
                                     // Input new due date using getValidDateFromUser
                                     tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
@@ -806,23 +822,8 @@ int main()
                 }
                 case 6: 
                 {
-                    cout << "1. Export report to CSV file\n";
-                    cout << "0. Go back\n";
-                    cout << "Choose option: ";
-                    cin >> choice;
-                    switch (choice) 
-                    {
-                        case 1: 
-                        {
-                            exportReportToCSV(currentUser);
-                            break;
-                        }
-                        case 0: 
-                            break;
-                        default:
-                            cout << "Invalid choice. Please try again.\n";
-                    }
-                    break;
+                    exportReportToCSV(currentUser);
+                    break;    
                 }
                 case 0: // Log out
                     cout << "Successfully logged out!\n";

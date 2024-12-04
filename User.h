@@ -54,7 +54,7 @@ class User
 
                 // Trừ số dư tài khoản khỏi tổng số dư người dùng
                 money -= balance;
-                cout << "The account balance of " << accID << ": " << balance << " VND has been deducted from the user's balance";
+                cout << "The account balance of " << accID << ": " << balance << " USD has been deducted from the user's balance";
                 // Xóa tài khoản khỏi danh sách
                 accounts.erase(it);
                 cout << "The account " << accID << " has been deleted.\n";
@@ -101,7 +101,7 @@ class User
 
             fromAcc->updateBalance(-amount);
             toAcc->updateBalance(amount);
-            cout << "Transfer successful: " << amount << " VND from " << fromAccID << " to " << toAccID << endl;
+            cout << "Transfer successful: " << amount << " USD from " << fromAccID << " to " << toAccID << endl;
         }
 
 
@@ -329,12 +329,12 @@ class User
                     cout << "ID: " << trans.getID() 
                         << ", Category: " << trans.getCategory() 
                         << ", Date: " << trans.getDate() 
-                        << ", Amount: " << trans.getAmount() << " VND\n";
+                        << ", Amount: " << trans.getAmount() << " USD\n";
                 }
             }
 
             // In ra tổng thu
-            cout << "\nTotal income: " << totalIncome << " VND\n";
+            cout << "\nTotal income: " << totalIncome << " USD\n";
 
             // In ra tất cả các khoản chi
             cout << "\n--- Expenses ---\n";
@@ -347,13 +347,13 @@ class User
                     cout << "ID: " << trans.getID() 
                         << ", Category: " << trans.getCategory() 
                         << ", Date: " << trans.getDate() 
-                        << ", Amount: " << trans.getAmount() << " VND\n";
+                        << ", Amount: " << trans.getAmount() << " USD\n";
                 }
             }
 
             // In ra tổng chi
-            cout << "\nTotal expenses: " << totalExpense << " VND\n";
-            cout << "Total income and expenses: " << totalIncome - totalExpense << " VND\n";
+            cout << "\nTotal expenses: " << totalExpense << " USD\n";
+            cout << "Total income and expenses: " << totalIncome - totalExpense << " USD\n";
         }
         // Tổng số dư
         double getBalance() const 
