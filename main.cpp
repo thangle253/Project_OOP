@@ -7,7 +7,8 @@
 #include <cmath>
 #include <sstream>
 #include <iomanip>
-
+#include <string>
+#include <stdexcept>
 using namespace std;
 
 // Show login menu
@@ -93,51 +94,95 @@ void showMainMenu()
     cout << "Choose an option: ";
 }
 
-// Convert string to std::tm for date
-std::tm convertStringToDate(const std::string& dateStr) 
-{
+
+// Kiểm tra ngày hợp lệ
+bool isValidDate(int year, int month, int day) {
+    if (year < 0 || month < 1 || month > 12 || day < 1) return false;
+
+    // Số ngày trong từng tháng
+    const int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    // Kiểm tra năm nhuận
+    bool isLeapYear = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+
+    int maxDay = daysInMonth[month - 1];
+    if (month == 2 && isLeapYear) maxDay = 29; // Tháng 2 năm nhuận
+
+    return day <= maxDay;
+}
+
+// Chuyển chuỗi ngày sang std::tm
+std::tm convertStringToDate(const std::string& dateStr) {
     std::tm date = {};
     std::istringstream ss(dateStr);
-    ss >> std::get_time(&date, "%Y-%m-%d");
-    if (ss.fail()) {
-        throw std::invalid_argument("Invalid date: " + dateStr);
+    char delimiter;
+
+    // Định dạng: yyyy-mm-dd
+    ss >> date.tm_year >> delimiter >> date.tm_mon >> delimiter >> date.tm_mday;
+
+    // Kiểm tra định dạng
+    if (ss.fail() || delimiter != '-' || date.tm_year < 1900) {
+        throw std::invalid_argument("Invalid date format. Use yyyy-mm-dd.");
     }
+
+    // Chỉnh lại tm_year và tm_mon (theo std::tm)
+    date.tm_year -= 1900;
+    date.tm_mon -= 1;
+
+    // Kiểm tra tính hợp lệ của ngày
+    if (!isValidDate(date.tm_year + 1900, date.tm_mon + 1, date.tm_mday)) {
+        throw std::invalid_argument("Invalid date: The specified date does not exist.");
+    }
+
     return date;
 }
 
-// Function to get a valid date from the user, with condition for future dates
-std::tm getValidDateFromUser(const std::string& prompt, int allowFutureDate) 
-{
+// Hàm nhập ngày hợp lệ
+std::tm getValidDateFromUser(const std::string& prompt, int allowFutureDate) {
     std::string dateStr;
     std::tm date;
 
-    while (true)
-     {
+    while (true) {
         std::cout << prompt;
         std::cin >> dateStr;
 
         try {
-            date = convertStringToDate(dateStr); // Check and convert date string
+            date = convertStringToDate(dateStr); // Kiểm tra và chuyển chuỗi ngày
 
-            // If future dates are not allowed
+            // Nếu không cho phép nhập ngày tương lai
             if (allowFutureDate == 0) {
-                std::time_t currentTime = std::time(nullptr); // Get current time
-                std::tm* currentDate = std::localtime(&currentTime); // Convert to std::tm
+                std::time_t currentTime = std::time(nullptr); // Lấy thời gian hiện tại
+                std::tm* currentDate = std::localtime(&currentTime); // Chuyển sang std::tm
 
-                // Compare input date with current date
+                // So sánh ngày nhập với ngày hiện tại
                 if (date.tm_year > currentDate->tm_year || 
                     (date.tm_year == currentDate->tm_year && date.tm_mon > currentDate->tm_mon) ||
                     (date.tm_year == currentDate->tm_year && date.tm_mon == currentDate->tm_mon && date.tm_mday > currentDate->tm_mday)) {
                     throw std::invalid_argument("Date cannot be in the future.");
                 }
             }
+            // Nếu cho phép nhập ngày quá khứ
+            else if (allowFutureDate == 1) {
+                std::time_t currentTime = std::time(nullptr); // Lấy thời gian hiện tại
+                std::tm* currentDate = std::localtime(&currentTime); // Chuyển sang std::tm
 
-            break;  // Exit loop if no errors
+                // So sánh ngày nhập với ngày hiện tại
+                if (date.tm_year < currentDate->tm_year || 
+                    (date.tm_year == currentDate->tm_year && date.tm_mon < currentDate->tm_mon) ||
+                    (date.tm_year == currentDate->tm_year && date.tm_mon == currentDate->tm_mon && date.tm_mday < currentDate->tm_mday)) {
+                    throw std::invalid_argument("Date cannot be in the past.");
+                    }
+
+                }
+
+
+
+
+            break; // Thoát vòng lặp nếu không có lỗi
         } catch (const std::invalid_argument& e) {
             std::cout << "Error: " << e.what() << ". Please re-enter the date in the format yyyy-mm-dd.\n";
         }
     }
-
     return date;
 }
 
@@ -656,10 +701,7 @@ int main()
 
                             // Enter and validate due date
                             std::tm dueDate = getValidDateFromUser("Enter due date (yyyy-mm-dd): ", 1);
-
-                            // Enter lend status
-                            cout << "Status (0: Unpaid, 1: Paid): ";
-                            cin >> status;
+                            status = 0;
 
                             // Add the lend to the list
                             currentUser->addLend(Lend(debtorName, amount, interestRate, dueDate, createDate, status));
@@ -705,9 +747,6 @@ int main()
                                             cout << "Interest rate cannot be negative. Please enter a positive value.\n";
                                         }
                                     } while (newRate < 0);
-                                    // Input new due date and validate
-                                    cout << "Enter new due date (yyyy-mm-dd): ";
-                                    cin >> newDueDateStr;
                                     // Validate and convert newDueDate
                                     std::tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
                                     // Input new status (0: Unpaid, 1: Paid)

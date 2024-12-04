@@ -1,4 +1,4 @@
-Tong So Du,-870000.00 USD
+Tong So Du,-3000000.00 USD
 
 --- Danh Sach Tai Khoan ---
 Tai Khoan,So Du
@@ -8,10 +8,7 @@ Lender,Money,Rate,Due Date,Status
 
 --- Danh Sach Khoan Cho Vay ---
 Debtor,Money,Rate,Due Date,Status
-Debtor: thang, Money: 100000.000000, Rate: 2.000000%, Due Date: 2025-12-09, Status: Unpaid
-Debtor: trung, Money: 300000.000000, Rate: 5.000000%, Due Date: 2024-02-02, Status: Unpaid
-Debtor: khang, Money: 400000.000000, Rate: 3.000000%, Due Date: 2024-01-01, Status: Unpaid
-Debtor: nguyen, Money: 70000.000000, Rate: 7.000000%, Due Date: 2024-12-06, Status: Unpaid
+Debtor: trung, Money: 3000000.000000, Rate: 20.000000%, Due Date: 2024-04-05, Status: Unpaid
 
 --- Bao Cao Thu Chi ---
 Type,ID,Category,Date,Amount
