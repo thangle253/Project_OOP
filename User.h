@@ -362,7 +362,10 @@ class User
         {
             return this -> money += amount;
         }
-
+        string getID() const
+        {
+            return this->ID;
+        }
         // Trong lớp User.h, thêm phương thức getAccounts() để trả về danh sách tài khoản
         vector<Account>& getAccounts()
         {

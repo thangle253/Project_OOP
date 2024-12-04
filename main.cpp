@@ -316,7 +316,9 @@ void manageTransaction(User* currentUser)
 void exportReportToCSV(User* currentUser) 
 {
     // Mở file CSV để ghi dữ liệu
-    ofstream reportFile("report.csv");
+    string filename;
+    filename = "user/" + currentUser->getID() + ".csv";
+    ofstream reportFile(filename);
 
     if (!reportFile) {
         cout << "Khong the mo file de ghi!\n";
