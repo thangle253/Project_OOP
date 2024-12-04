@@ -424,16 +424,14 @@ int main()
                 case 1: 
                 { // Manage accounts
                     int accountChoice;
-                    cout << "1. Add account\n2. Remove account\n3. Update account balance\n0. Go back\nChoose option: ";
+                    cout << "1. Add account\n2. Remove account\n3. Update account balance\n4. Banking\n0. Go back\nChoose option: ";
                     cin >> accountChoice;
 
                     if (accountChoice == 1) 
                     { // Add account
-                        if (accountChoice == 1) 
-                        { // Add account
                         string accName;
                         double balance;
-                        
+
                         // Tạo ID tự động dựa vào số lượng tài khoản hiện tại
                         string accID = to_string(currentUser->getAccounts().size() + 1);  // Tạo ID tự động từ số lượng tài khoản
 
@@ -457,7 +455,8 @@ int main()
                         currentUser->removeAccount(accID);
                         cout << "Account has been removed (if it existed).\n";
                     } 
-                    else if (accountChoice == 3) { // Update account balance
+                    else if (accountChoice == 3) 
+                    { // Update account balance
                         string accID;
                         double newBalance;
                         cout << "Enter the account ID to update: ";
@@ -467,9 +466,46 @@ int main()
                         currentUser->updateAccount(accID, newBalance);
                         cout << "Account balance has been updated.\n";
                     }
-                    break;
+                    else if (accountChoice == 4) // Banking (Chuyển tiền)
+                    { 
+                        string fromAccID, toAccID;
+                        double amount;
+                        // Hiển thị danh sách tài khoản người dùng có
+                        if (currentUser->getAccounts().empty()) 
+                        {
+                            cout << "No accounts available.\n";
+                        } 
+                        else 
+                        {
+                            cout << "List of Accounts:\n";
+                            for (size_t i = 0; i < currentUser->getAccounts().size(); ++i) {
+                                cout << i + 1 << ". Account ID: " << currentUser->getAccounts()[i].getAccountID() << "\n";
+                                cout << "   Account Name: " << currentUser->getAccounts()[i].getAccountName() << "\n";
+                                cout << "   Balance: " << currentUser->getAccounts()[i].getBalance() << " VND\n";
+                                cout << "-----------------------------\n";
+                            }
+
+                            cout << "Enter the Account ID to transfer from: ";
+                            cin >> fromAccID;
+                            cout << "Enter the Account ID to transfer to: ";
+                            cin >> toAccID;
+                            cout << "Enter the amount to transfer: ";
+                            cin >> amount;
+                            // Gọi hàm banking để thực hiện chuyển tiền
+                            currentUser->banking(fromAccID, toAccID, amount);
+                        }
                     }
+                    else if (accountChoice == 0) 
+                    { // Go back
+                        break;
+                    }
+                    else 
+                    {
+                        cout << "Invalid choice. Please try again.\n";
+                    }
+                    break;
                 }
+
                 case 2: // Manage transactions
                 {
                     int transChoice;
@@ -645,6 +681,7 @@ int main()
                             currentUser->removeLoan(lenderName);
                             break;
                         }
+                       
                         case 0:
                             break;
                         default:
