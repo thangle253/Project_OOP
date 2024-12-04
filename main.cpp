@@ -501,12 +501,23 @@ int main()
                             cout << "Enter lender's name: ";
                             cin.ignore(); // To ensure no space is skipped when entering name
                             getline(cin, debtorName);
-                            
-                            cout << "Enter loan amount: ";
-                            cin >> amount;
+                            //Enter loan amount 
+                            do {
+                                cout << "Enter loan amount: ";
+                                cin >> amount;
+                                if (amount <= 0) {
+                                    cout << "Amount cannot be negative. Please enter a positive value.\n";
+                                }
+                            } while (amount <= 0);
 
-                            cout << "Enter interest rate (%): ";
-                            cin >> interestRate;
+                            // Enter interest rate
+                            do {
+                                cout << "Enter interest rate (%): ";
+                                cin >> interestRate;
+                                if (interestRate < 0) {
+                                    cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                }
+                            } while (interestRate < 0);
 
                             // Use getValidDateFromUser function to input and validate creation and due dates
                             std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
@@ -553,8 +564,13 @@ int main()
                                     loanFound = true;
 
                                     // Input new interest rate
-                                    cout << "Enter new interest rate (%): ";
-                                    cin >> newRate;
+                                    do {
+                                        cout << "Enter new interest rate (%): ";
+                                        cin >> newRate;
+                                        if (newRate < 0) {
+                                            cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                        }
+                                    } while (newRate < 0);
 
                                     // Input new due date using getValidDateFromUser
                                     tm newDueDate = getValidDateFromUser("Enter new due date (yyyy-mm-dd): ", 1);
