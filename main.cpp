@@ -186,7 +186,7 @@ std::tm getValidDateFromUser(const std::string& prompt, int allowFutureDate) {
     return date;
 }
 
-void manageTransaction(User* currentUser) 
+void Add_Transaction(User* currentUser) 
 {
     // Kiểm tra xem người dùng có tài khoản hay không
     if (currentUser->getAccounts().empty()) 
@@ -537,7 +537,7 @@ int main()
                     switch (transChoice) {
                         case 1: 
                         { // Add transaction
-                            manageTransaction(currentUser);
+                            Add_Transaction(currentUser);
                             break;
                         }
                         case 2: 
