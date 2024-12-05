@@ -47,6 +47,9 @@ public:
             ", Status: " + (status ? "Paid" : "Unpaid");
     }
 
+    // Set trạng thái
+    void setStatus(bool status) { this->status = status; } // Cập nhật trạng thái khoản vay
+
     //get name
     string getLenderName() const { return lenderName; } // Trả về tên người cho vay
     
