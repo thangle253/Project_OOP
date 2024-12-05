@@ -134,13 +134,21 @@ class User
                     trans.setNote(newNote); // Cập nhật ghi chú mới
 
                     // Cập nhật số dư tài khoản nếu số tiền giao dịch thay đổi
-                    if (newAmount != oldAmount) 
+                    if (newAmount != oldAmount)
                     {
-                        double diff = newAmount - oldAmount;  // Tính chênh lệch số tiền
-                        this->updateBalance(diff);  // Cập nhật số dư tài khoản
-                        cout << "The account balance has been updated after the transaction modification.\n";
+                        if(trans.getType() == "1") // Nếu là giao dịch thu
+                        {
+                            double diff = oldAmount - newAmount;  // Tính chênh lệch số tiền 
+                            this->updateBalance(-diff);  // Cập nhật số dư tài khoản
+                            cout << "The account balance has been updated after the transaction modification.\n";
+                        }
+                        else //chi
+                        {
+                            double diff = oldAmount - newAmount ;  // Tính chênh lệch số tiền 
+                            this->updateBalance(diff);  // Cập nhật số dư tài khoản
+                            cout << "The account balance has been updated after the transaction modification.\n";
+                        }
                     }
-
                     cout << "The transaction " << transID << "  has been updated.\n";
                     return;
                 }
@@ -194,23 +202,24 @@ class User
                 {
                     // Cập nhật lãi suất, ngày đến hạn và trạng thái
                     // Không cần chuyển đổi ngày, vì newDueDate đã là kiểu std::tm
-
+                    if (newStatus != loan.getStatus()) 
+                    {
+                        // Nếu trạng thái là "đã trả", cập nhật số dư của người cho vay
+                        if (newStatus) 
+                        {
+                            double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
+                            this->updateBalance(-amount); // Cập nhật số dư của người cho vay
+                            cout << "The lender's balance has been updated after the loan repayment.\n";
+                        }
+                        else{
+                            double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
+                            this->updateBalance(amount); // Cập nhật số dư của người cho vay
+                            cout << "The lender's balance has been updated after the loan repayment.\n";
+                        }
+                        return;
+                    }
                     // Cập nhật thông tin khoản vay
                     loan.update(newDueDate, newRate, newStatus);
-
-                    // Nếu trạng thái là "đã trả", cập nhật số dư của người cho vay
-                    if (newStatus) 
-                    {
-                        double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
-                        this->updateBalance(-amount); // Cập nhật số dư của người cho vay
-                        cout << "The lender's balance has been updated after the loan repayment.\n";
-                    }
-                    else{
-                        double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
-                        this->updateBalance(amount); // Cập nhật số dư của người cho vay
-                        cout << "The lender's balance has been updated after the loan repayment.\n";
-                    }
-                    return;
                 }
             }
             cout << "Loan from the lender not found: " << lenderName << endl;
@@ -254,24 +263,26 @@ class User
             {
                 if (lend.getBorrowDetail().find(debtorName) != string::npos) 
                 {
-                    // Cập nhật lãi suất, ngày đến hạn và trạng thái
+                   
+                    if (newStatus != lend.getStatus()) 
+                    {// Nếu khoản vay đã trả (newStatus == true), cập nhật số dư tài khoản của người cho vay
+                        if (newStatus) 
+                        {
+                            // Cập nhật số dư của người cho vay
+                            double amount = lend.calculateCompoundInterest();  // Số tiền đã cho vay + tiền lãi
+                            this->money += amount;  // Cộng số tiền đã trả vào số dư tài khoản
+                            cout << "Your account balance has been updated after the borrower repaid the loan.\n";
+                        }
+                        else{
+                            // Cập nhật số dư của người cho vay
+                            double amount = lend.calculateCompoundInterest();  // Số tiền đã cho vay + tiền lãi
+                            this->money -= amount;  // Cộng số tiền đã trả vào số dư tài khoản
+                            cout << "Your account balance has been updated after the borrower repaid the loan.\n";
+                        }
+                        return;
+                    }
+                     // Cập nhật lãi suất, ngày đến hạn và trạng thái
                     lend.update(newDueDate, newRate, newStatus);
-
-                    // Nếu khoản vay đã trả (newStatus == true), cập nhật số dư tài khoản của người cho vay
-                    if (newStatus) 
-                    {
-                        // Cập nhật số dư của người cho vay
-                        double amount = lend.calculateCompoundInterest();  // Số tiền đã cho vay + tiền lãi
-                        this->money += amount;  // Cộng số tiền đã trả vào số dư tài khoản
-                        cout << "Your account balance has been updated after the borrower repaid the loan.\n";
-                    }
-                    else{
-                        // Cập nhật số dư của người cho vay
-                        double amount = lend.calculateCompoundInterest();  // Số tiền đã cho vay + tiền lãi
-                        this->money -= amount;  // Cộng số tiền đã trả vào số dư tài khoản
-                        cout << "Your account balance has been updated after the borrower repaid the loan.\n";
-                    }
-                    return;
                 }
             }
             cout << "The borrower's loan not found " << debtorName << ".\n";

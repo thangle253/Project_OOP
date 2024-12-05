@@ -1,17 +1,23 @@
-Tong So Du,0.00 VND
+Tong So Du,561769.47 VND
 
 --- Danh Sach Tai Khoan ---
 Tai Khoan,So Du
+MB,120000.00 VND
+VCB,30000.00 VND
 
 --- Danh Sach Khoan Vay ---
 Lender,Money,Rate,Due Date,Status
+Lender: Sang, Money: 150000.000000VND, Rate: 20.000000%, Due Date: 2025-01-01, Created On: 2023-01-01, Status: Unpaid
 
 --- Danh Sach Khoan Cho Vay ---
 Debtor,Money,Rate,Due Date,Status
+Debtor: Khang, Money: 30000.000000VND, Rate: 20.000000%, Due Date: 2025-01-01, Status: Unpaid
 
 --- Bao Cao Thu Chi ---
 Type,ID,Category,Date,Amount
+Income,1,Gift,2024-12-03,300000.00 VND
+Expense,2,Food,2024-12-01,200000.00 VND
 
-Tong Thu,0.00 VND
-Tong Chi,0.00 VND
-Chenh Lech Thu Chi,0.00 VND
+Tong Thu,300000.00 VND
+Tong Chi,200000.00 VND
+Chenh Lech Thu Chi,100000.00 VND
