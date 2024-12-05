@@ -838,7 +838,6 @@ int main()
                                         defaultAccount.updateBalance(-loanAmount); // Trừ tiền vào tài khoản đầu tiên
                                         cout << "Amount " << loanAmount << " VND has been added back to your account.\n";
                                     }
-
                                     // Xóa khoản vay khỏi danh sách
                                     currentUser->removeLoan(lenderName);
                                     cout << "Loan from " << lenderName << " has been removed.\n";

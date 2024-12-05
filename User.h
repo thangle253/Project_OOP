@@ -182,7 +182,7 @@ class User
                     if (it->getStatus() == false)   
                     { // Nếu khoản vay chưa được trả
                         double amount = it->getAmount(); // Lấy số tiền khoản vay
-                        this -> money += amount; // Hoàn trả số tiền cho vay vào tài khoản của người cho vay
+                        this -> money -= amount; // Hoàn trả số tiền cho vay vào tài khoản của người cho vay
                         cout << "The loan of " << lenderName << " has not been repaid, and the account balance has been updated.\n";
                     }  
                     // Xoa khoan vay
