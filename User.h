@@ -179,9 +179,10 @@ class User
                 if (it->getLoanDetail().find(lenderName) != string::npos) 
                 {
                     // Kiểm tra xem khoản vay có được trả chưa
-                    if (!it->getStatus()) { // Nếu khoản vay chưa được trả
+                    if (it->getStatus() == false)   
+                    { // Nếu khoản vay chưa được trả
                         double amount = it->getAmount(); // Lấy số tiền khoản vay
-                        this -> money += -amount; // Hoàn trả số tiền cho vay vào tài khoản của người cho vay
+                        this -> money += amount; // Hoàn trả số tiền cho vay vào tài khoản của người cho vay
                         cout << "The loan of " << lenderName << " has not been repaid, and the account balance has been updated.\n";
                     }  
                     // Xoa khoan vay
@@ -211,7 +212,8 @@ class User
                             this->updateBalance(-amount); // Cập nhật số dư của người cho vay
                             cout << "The lender's balance has been updated after the loan repayment.\n";
                         }
-                        else{
+                        else
+                        {
                             double amount = loan.calculateCompoundInterest();  // Lấy số tiền đã cho vay
                             this->updateBalance(amount); // Cập nhật số dư của người cho vay
                             cout << "The lender's balance has been updated after the loan repayment.\n";
@@ -240,7 +242,7 @@ class User
                 if (it->getBorrowDetail().find(debtorName) != string::npos) 
                 {
                     // Kiểm tra trạng thái khoản cho vay
-                    if (!it->getStatus())  // Nếu khoản cho vay chưa được trả
+                    if (it->getStatus() == 0)  // Nếu khoản cho vay chưa được trả
                     {   double amount = it->getAmount(); // Lấy số tiền khoản cho vay
                         this -> updateBalance(amount); // Hoàn lại số tiền cho vay vào số dư tài khoản
                         cout << "The debtor " << debtorName << " has not repaid the money, and the account balance has been updated.\n";
@@ -250,8 +252,7 @@ class User
                     cout << "The borrower's loan: " << debtorName << " has been deleted.\n";
                     return;
                 }
-            }
-
+            }\
             cout << "The borrower's loan not found: " << debtorName << ".\n";
         }
 

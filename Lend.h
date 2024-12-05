@@ -40,6 +40,12 @@ public:
                "%, Due Date: " + getDateString(dueDate) + ", Status: " + (status ? "Paid" : "Unpaid");
     }
 
+    // set status
+    void setStatus(bool status) {
+        this -> status = status;
+    }
+    
+
     // Lấy số tiền đã cho vay
     double getAmount() const {
         return money;
@@ -79,14 +85,15 @@ public:
     }
 
     // Cập nhật thông tin khoản vay
-    void update(const tm& newDueDate, double newRate, bool newStatus) {
+    void update(const tm& newDueDate, double newRate, bool newStatus) 
+    {
         // Kiểm tra tính hợp lệ của ngày
         if (!isValidDate(newDueDate.tm_year + 1900, newDueDate.tm_mon + 1, newDueDate.tm_mday)) {
         throw std::invalid_argument("Invalid due date: The specified date does not exist.");
         }
         dueDate = newDueDate;        // Ngày đến hạn mới
         interestRate = newRate;      // Lãi suất mới
-        status = newStatus;          // Trạng thái mới
+        this -> status = newStatus;          // Trạng thái mới
     }
 
     // Tính lãi suất kép (theo số tháng)

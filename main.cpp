@@ -933,16 +933,21 @@ int main()
                                                 {
                                                     double lendAmount = lend.calculateCompoundInterest(); // Lấy số tiền khoản cho vay + lãi
                                                     // Kiểm tra xem tài khoản có đủ tiền không
-                                                    
                                                         selectedAccount.updateBalance(lendAmount); // Cộng số tiền từ tài khoản
+                                                        currentUser->updateBalance(lendAmount); // Cập nhật số dư người dùng
                                                         cout << "Loan status updated to 'Paid'. Amount of " << lendAmount << " VND deducted from the selected account.\n";
+                                                        lend.setStatus(newStatus); // Cập nhật trạng thái khoản cho vay
                                                 } 
                                                 else 
                                                 {
                                                     double lendAmount = lend.getAmount(); // Lấy số tiền khoản cho vay
                                                     // Kiểm tra xem tài khoản có đủ tiền không                                              
                                                     selectedAccount.updateBalance(-lendAmount); // Trừ số tiền từ tài khoản
+                                                    currentUser->updateBalance(-lendAmount); // Cập nhật số dư người dùng
+
                                                     cout << "Loan status updated to 'UnPaid'. Amount of " << lendAmount << " VND received from the selected account.\n";
+                                                    lend.setStatus(newStatus); // Cập nhật trạng thái khoản cho vay
+
 
                                                 }
                                                 // Cập nhật trạng thái khoản cho vay
@@ -965,15 +970,44 @@ int main()
                             break;
                         }
 
-                        case 4: 
-                        { // Remove lend
+                        case 4:
+                        {
+                            // Remove lend
                             string debtorName;
                             cout << "Enter debtor's name to remove lend: ";
-                            cin.ignore();
+                            cin.ignore();  // To skip the leftover '\n' character
                             getline(cin, debtorName);
-                            currentUser->removeLend(debtorName);
+
+                            // Tìm kiếm khoản vay theo tên người vay
+                            bool lendFound = false;
+                            for (auto& lend : currentUser->getLends()) 
+                            {
+                                if (lend.getBorrowDetail().find(debtorName) != string::npos)  // Tìm kiếm theo tên người vay
+                                {
+                                    lendFound = true;
+                                    // Lấy số tiền từ khoản vay và cộng lại vào tài khoản
+                                    double lendAmount = lend.getAmount();
+                                    Account& defaultAccount = currentUser->getAccounts()[0]; // Giả sử tài khoản đầu tiên là tài khoản mặc định
+                                    //Nếu mà status = 0 thì cộng tiền vào tài khoản
+                                    if (lend.getStatus() == 0) 
+                                    {
+                                        defaultAccount.updateBalance(lendAmount); // Cộng tiền vào tài khoản đầu tiên
+                                        cout << "Amount " << lendAmount << " VND has been added back to your account.\n";
+                                    }
+                                    // Xóa khoản cho vay khỏi danh sách
+                                    currentUser->removeLend(debtorName);
+                                    cout << "Lend to " << debtorName << " has been removed.\n";
+                                    break;
+                                }
+                            }
+
+                            if (!lendFound)  // Nếu không tìm thấy khoản cho vay
+                            {
+                                cout << "No lend found for debtor " << debtorName << ".\n";
+                            }
                             break;
                         }
+
                         case 0:
                             break;
                         default:
