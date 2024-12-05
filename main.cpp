@@ -754,47 +754,81 @@ int main()
                             double amount, interestRate;
                             bool status;
 
-                            // Enter debtor's name
-                            cout << "Enter debtor's name: ";
-                            cin.ignore();  // To skip the leftover '\n' character
-                            getline(cin, debtorName);
-
-                            // Enter lend amount
-                            do {
-                                cout << "Enter lend amount: ";
-                                cin >> amount;
-    
-                                if (amount <= 0) 
-                                    cout << "Amount cannot be negative. Please enter a positive value.\n";
-                                else if(amount > currentUser->getBalance())
-                                    cout << "Amount cannot be greater than your balance. Please enter a smaller value.\n";
-                                else
-                                    break;
-                            } while (true);
-
-                            // Enter interest rate
-                            do {
-                                cout << "Enter interest rate (%): ";
-                                cin >> interestRate;
-                                if (interestRate < 0) {
-                                    cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                            // Display list of accounts
+                            if (currentUser->getAccounts().empty()) 
+                            {
+                                cout << "No accounts available.\n";
+                                break;
+                            } 
+                            else 
+                            {
+                                cout << "List of Accounts:\n";
+                                for (size_t i = 0; i < currentUser->getAccounts().size(); ++i) 
+                                {
+                                    cout << i + 1 << ". Account ID: " << currentUser->getAccounts()[i].getAccountID() << "\n";
+                                    cout << "   Account Name: " << currentUser->getAccounts()[i].getAccountName() << "\n";
+                                    cout << "   Balance: " << currentUser->getAccounts()[i].getBalance() << " VND\n";
+                                    cout << "-----------------------------\n";
                                 }
-                            } while (interestRate < 0);
 
-                            // Enter and validate creation date
-                            std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
+                                int accChoice;
+                                // Chọn tài khoản để thực hiện vay
+                                cout << "Choose an account to lend from: ";
+                                cin >> accChoice;
 
-                            // Enter and validate due date
-                            std::tm dueDate = getValidDateFromUser("Enter due date (yyyy-mm-dd): ", 1);
-                            status = 0;
+                                // Kiểm tra lựa chọn tài khoản hợp lệ
+                                if (accChoice < 1 || accChoice > currentUser->getAccounts().size()) 
+                                {
+                                    cout << "Invalid choice. Please try again.\n";
+                                    break;
+                                }
 
-                            // Add the lend to the list
-                            currentUser->addLend(Lend(debtorName, amount, interestRate, dueDate, createDate, status));
-                            cout << "Lend added successfully!\n";
+                                // Lấy tài khoản đã chọn
+                                Account& selectedAccount = currentUser->getAccounts()[accChoice - 1];
 
-                            // Update balance when lending
-                            currentUser->updateBalance(-amount); 
-                            break;
+                                // Nhập tên người vay
+                                cout << "Enter debtor's name: ";
+                                cin.ignore();  // Để bỏ qua ký tự '\n' còn lại
+                                getline(cin, debtorName);
+
+                                // Nhập số tiền vay
+                                do {
+                                    cout << "Enter lend amount: ";
+                                    cin >> amount;
+
+                                    // Kiểm tra số tiền vay hợp lệ
+                                    if (amount <= 0) 
+                                        cout << "Amount cannot be negative. Please enter a positive value.\n";
+                                    else if (amount > selectedAccount.getBalance()) // Kiểm tra số dư tài khoản
+                                        cout << "Amount cannot be greater than your account balance. Please enter a smaller value.\n";
+                                    else
+                                        break;
+                                } while (true);
+
+                                // Nhập lãi suất
+                                do {
+                                    cout << "Enter interest rate (%): ";
+                                    cin >> interestRate;
+                                    if (interestRate < 0) {
+                                        cout << "Interest rate cannot be negative. Please enter a positive value.\n";
+                                    }
+                                } while (interestRate < 0);
+
+                                // Nhập ngày tạo khoản vay và ngày đáo hạn
+                                std::tm createDate = getValidDateFromUser("Enter creation date (yyyy-mm-dd): ", 0);
+                                std::tm dueDate = getValidDateFromUser("Enter due date (yyyy-mm-dd): ", 1);
+
+                                status = 0;  // Khoản vay ban đầu là chưa trả
+
+                                // Thêm khoản vay vào danh sách
+                                currentUser->addLend(Lend(debtorName, amount, interestRate, dueDate, createDate, status));
+                                cout << "Lend added successfully!\n";
+                                // Cập nhật số dư tài khoản sau khi cho vay
+                                selectedAccount.updateBalance(-amount);
+                                currentUser->updateBalance(-amount);
+                                cout << "Amount deducted from the selected account.\n";
+                                break;
+                            }
                         }
 
                         case 2: { // View lend list
@@ -861,12 +895,61 @@ int main()
                                             break;
 
                                         case 3: 
+                                        {
                                             // Input new status (0: Unpaid, 1: Paid)
                                             cout << "Enter new status (0: Unpaid, 1: Paid): ";
                                             cin >> newStatus;
-                                            currentUser->updateLend(lend.getDebtorName(), lend.getInterestRate(), lend.getDueDate(), newStatus); // Update status only
-                                            cout << "Loan status updated successfully.\n";
-                                            break;
+
+                                            // Kiểm tra trạng thái hợp lệ
+                                            if (newStatus != 0 && newStatus != 1) 
+                                            {
+                                                cout << "Invalid status entered. Please enter 0 for Unpaid or 1 for Paid.\n";
+                                                break; // Không cập nhật nếu nhập sai
+                                            }
+
+                                            // Hiển thị danh sách tài khoản của người dùng để chọn tài khoản trừ tiền
+                                            cout << "Choose an account to deduct money from for the loan:\n";
+                                            int accChoice;
+                                            for (size_t i = 0; i < currentUser->getAccounts().size(); ++i) {
+                                                cout << i + 1 << ". Account ID: " << currentUser->getAccounts()[i].getAccountID() << " - "
+                                                    << currentUser->getAccounts()[i].getAccountName() << " - Balance: "
+                                                    << currentUser->getAccounts()[i].getBalance() << " VND\n";
+                                            }
+
+                                            // Người dùng chọn tài khoản
+                                            cin >> accChoice;
+                                            if (accChoice < 1 || accChoice > currentUser->getAccounts().size()) {
+                                                cout << "Invalid choice. Please try again.\n";
+                                                break;
+                                            }
+
+                                            // Lấy tài khoản đã chọn
+                                            Account& selectedAccount = currentUser->getAccounts()[accChoice - 1];
+
+                                            if (newStatus != lend.getStatus()) 
+                                            {
+                                                // Nếu trạng thái là "Paid", trừ tiền từ tài khoản
+                                                if (newStatus == 1) 
+                                                {
+                                                    double lendAmount = lend.calculateCompoundInterest(); // Lấy số tiền khoản cho vay + lãi
+                                                    // Kiểm tra xem tài khoản có đủ tiền không
+                                                    
+                                                        selectedAccount.updateBalance(lendAmount); // Cộng số tiền từ tài khoản
+                                                        cout << "Loan status updated to 'Paid'. Amount of " << lendAmount << " VND deducted from the selected account.\n";
+                                                } 
+                                                else 
+                                                {
+                                                    double lendAmount = lend.getAmount(); // Lấy số tiền khoản cho vay
+                                                    // Kiểm tra xem tài khoản có đủ tiền không                                              
+                                                    selectedAccount.updateBalance(-lendAmount); // Trừ số tiền từ tài khoản
+                                                    cout << "Loan status updated to 'UnPaid'. Amount of " << lendAmount << " VND received from the selected account.\n";
+
+                                                }
+                                                // Cập nhật trạng thái khoản cho vay
+                                                currentUser->updateLend(lend.getDebtorName(), lend.getInterestRate(), lend.getDueDate(), newStatus);
+                                            }                                  
+                                            break; // Exit the loop after successful update
+                                        }
 
                                         default:
                                             cout << "Invalid choice. No updates were made.\n";

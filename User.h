@@ -266,7 +266,7 @@ class User
                    
                     if (newStatus != lend.getStatus()) 
                     {// Nếu khoản vay đã trả (newStatus == true), cập nhật số dư tài khoản của người cho vay
-                        if (newStatus) 
+                        if (newStatus == 1)  
                         {
                             // Cập nhật số dư của người cho vay
                             double amount = lend.calculateCompoundInterest();  // Số tiền đã cho vay + tiền lãi
