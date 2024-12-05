@@ -21,12 +21,6 @@ void showLoginMenu()
     cout << "Choose an option: ";
 }
 
-// Round to two decimal places
-double roundToTwoDecimal(double amount) 
-{
-    return round(amount * 100.0) / 100.0; // Round to two decimal places
-}
-
 // Login function
 User* login(unordered_map<string, User>& users) 
 {
